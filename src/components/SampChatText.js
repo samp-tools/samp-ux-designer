@@ -78,7 +78,9 @@ const SampChatText = (props) => {
 		setTextParts(parts);
 	};
 
-	React.useEffect(update, [props.content]);
+	React.useEffect(update, [
+		props.content, classes.text, props.defaultColor, props.keepColors
+	]);
 
 	
 	return (

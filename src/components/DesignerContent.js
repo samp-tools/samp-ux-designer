@@ -100,7 +100,7 @@ class DesignerContent extends React.Component {
 		}
 
 		this.handleRemoveChatMessage = (uuid) => {
-			const entries = this.state.entries.filter(entry => entry.id != uuid);
+			const entries = this.state.entries.filter(entry => entry.id !== uuid);
 			this.setState( { entries } )
 		}
 
