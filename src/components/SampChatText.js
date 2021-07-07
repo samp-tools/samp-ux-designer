@@ -1,12 +1,49 @@
 import React from 'react';
 
+import { makeStyles } from '@material-ui/core/styles';
+import {
+	Typography
+} from '@material-ui/core';
+
+
+const useStyles = makeStyles((theme) => ({
+	text: {
+		// "-webkit-text-fill-color": "white", /* Will override color (regardless of order) */
+		"-webkit-text-stroke-width": "0.5px",
+		"-webkit-text-stroke-color": "black",
+		"font-size": "16px",
+		"font-family": "Arial",
+		"font-weight": "bold",
+		"display": "inline"
+	},
+	typography: {
+		backgroundColor: "#222",
+		padding: 10,
+		height: "100%",
+		padding: "0px 20px",
+		display: "flex",
+		flexDirection: "column",
+		justifyContent: "center"
+	}
+}));
+
 const SampChatText = (props) => {
+
+	const classes = useStyles();
 
 	let text = props.content || "";
 	const textParts = [];
 	let addText = (t) => {
+
+		const nbsp = "\u00A0";
+
+		if (t.startsWith(" "))
+			t = nbsp + t.substring(1);
+		if (t.endsWith(" "))
+			t = t.substring(0, t.length - 1) + nbsp;
+
 		textParts.push( (
-			<font style={ { color: currentColor } }>{t}</font>
+			<span className={classes.text} style={ { color: currentColor } }>{t}</span>
 		));
 	};
 
@@ -38,9 +75,9 @@ const SampChatText = (props) => {
 	}
 
 	return (
-		<p>
-			{textParts}
-		</p>
+		<Typography paragraph className={ classes.typography }>
+			<span>{textParts}</span>
+		</Typography>
 	);
 }
 
