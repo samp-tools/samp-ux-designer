@@ -15,7 +15,6 @@ import PropTypes from 'prop-types';
 import SampChatText from './SampChatText'
 
 import { withStyles } from '@material-ui/core/styles';
-import { ThreeDRotationSharp } from '@material-ui/icons';
 
 const useStyles = theme => ({
 	toolbar: {

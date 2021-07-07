@@ -18,7 +18,6 @@ const useStyles = makeStyles((theme) => ({
 	},
 	typography: {
 		backgroundColor: "#222",
-		padding: 10,
 		height: "100%",
 		padding: "0px 20px",
 		display: "flex",

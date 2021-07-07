@@ -2,10 +2,10 @@ import React from 'react';
 
 import {
   BrowserRouter as Router,
-  Switch,
-  Route,
-  Link as RouteLink,
-  useHistory
+  // Switch,
+  // Route,
+  // Link as RouteLink,
+  // useHistory
 } from "react-router-dom";
 
 import clsx from 'clsx';
@@ -19,11 +19,15 @@ import {
   ListItemIcon,  ListItemText,
 } from '@material-ui/core';
 
-import { makeStyles, withStyles, useTheme } from '@material-ui/core/styles';
+import {
+  // makeStyles,
+  withStyles,
+  // useTheme
+} from '@material-ui/core/styles';
 
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+// import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 
