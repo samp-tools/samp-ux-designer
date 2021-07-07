@@ -16,7 +16,7 @@ import {
   Drawer,        AppBar,        Toolbar,
   List,          CssBaseline,   Typography,
   Divider,       IconButton,    ListItem,
-  ListItemIcon,  ListItemText,
+  ListItemIcon,  ListItemText,  Tooltip
 } from '@material-ui/core';
 
 import {
@@ -30,6 +30,8 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 // import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import ChatIcon from '@material-ui/icons/ViewHeadline';
+import DialogIcon from '@material-ui/icons/ListAlt';
 
 const drawerWidth = 240;
 
@@ -96,11 +98,13 @@ class App extends React.Component {
     this.tools = [
       {
         name: "Chat messages",
-        url: "/chat"
+        url: "/chat",
+        icon: ChatIcon
       },
       {
         name: "Dialogs",
-        url: "/dialog"
+        url: "/dialog",
+        icon: DialogIcon
       }
     ];
 
@@ -176,11 +180,13 @@ class App extends React.Component {
             </div>
             <Divider />
             <List>
-              {['Chat messages', 'Dialog'].map((text, index) => (
-                <ListItem button key={text} onClick={() => this.handleToolSelected(index)}>
-                  <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItem>
+              {this.tools.map((tool, index) => (
+                <Tooltip title={tool.name} arrow placement="right">
+                  <ListItem button key={tool.name} onClick={() => this.handleToolSelected(index)}>
+                    <ListItemIcon>{React.createElement(tool.icon, null)}</ListItemIcon>
+                    <ListItemText primary={tool.name} tooltip={tool.name}/>
+                  </ListItem>
+                </Tooltip>
               ))}
             </List>
             <Divider />
