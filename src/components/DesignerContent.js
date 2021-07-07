@@ -129,7 +129,7 @@ class DesignerContent extends React.Component {
 
 		this.getEntryElements = (entries) => {
 			const p = this.state.searchPattern;
-			const filtered = p !== "" ? entries.filter(e => (e.enumIdx || "").toLowerCase().search(p.toLowerCase()) != -1) : entries;
+			const filtered = p !== "" ? entries.filter(e => (e.enumIdx || "").toLowerCase().search(p.toLowerCase()) !== -1) : entries;
 			const result = filtered.map((entry, index) => (
 				<SampChatTextPreview
 						key={entry.id}
