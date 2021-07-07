@@ -1,4 +1,5 @@
 import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Switch, Route, Redirect } from "react-router-dom";
 
@@ -7,8 +8,12 @@ import { withRouter } from "react-router";
 import {
 	Typography,
 	TextField,
-	Grid
+	Grid,
+	Button, IconButton
 } from '@material-ui/core';
+
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Delete';
 
 import PropTypes from 'prop-types';
 
@@ -39,6 +44,8 @@ class SampChatTextPreview extends React.Component {
 			inputText: this.props.content || ""
 		};
 
+		this.textField = React.createRef();
+
 		this.handleInputTextChanged = (e) => {
 			this.setState({ inputText: e.target.value });
 		}
@@ -46,12 +53,19 @@ class SampChatTextPreview extends React.Component {
 
 	render() {
 		return (
-			<Grid container spacing={2}>
-				<Grid item xs={12} md={6}>
-					<TextField fullWidth variant="filled" label="SAMP Chat Text"
-							defaultValue={this.props.content || ""}
-							onChange={this.handleInputTextChanged}
-						/>
+			<Grid style={ { marginBottom: 10 } } container spacing={2}>
+				<Grid container justifyContent="space-between" item xs={12} md={6}>
+					<Grid item xs={2} sm={1} md={2} lg={1}>
+						<IconButton onClick={() => this.props.onRemoved()} >
+							<RemoveIcon/>
+						</IconButton>
+					</Grid>
+					<Grid item xs={10} sm={11} md={10} lg={11}>
+						<TextField ref={this.textField} fullWidth variant="filled" label="SAMP Chat Text"
+								value={this.state.inputText || ""}
+								onChange={this.handleInputTextChanged}
+							/>
+					</Grid>
 				</Grid>
 				<Grid item xs={12} md={6}>
 					<SampChatText content={this.state.inputText}/>
@@ -66,9 +80,33 @@ class DesignerContent extends React.Component {
 	constructor(props) {
 		super(props);
 
+		this.state = {
+			entries: [
+				{ id: uuidv4(), content: "{00FF00}You {CCFFCC}healed yourself {00FF00}for free!" },
+				{ id: uuidv4(), content: "Welcome to the {FF0000}Gold {FFFF00}Party {00CCFF}Polska {FFFFFF}server!" },
+			]
+		};
+
+		this.handleAddNewChatMessage = () => {
+			const entries = this.state.entries;
+			entries.push( { id: uuidv4(), content: "Chat message {FF0000}content..." } );
+			this.setState( { entries } )
+		}
+
+		this.handleRemoveChatMessage = (uuid) => {
+			const entries = this.state.entries.filter(entry => entry.id != uuid);
+			this.setState( { entries } )
+		}
+
 		this.enterUrl = (url) => {
 			this.props.history.push(url);
 		}
+
+		this.getEntryElements = (entries) => (
+			entries.map((entry, index) => (
+				<SampChatTextPreview key={entry.id} content={entry.content} onRemoved={() => this.handleRemoveChatMessage(entry.id)}/>
+			))
+		);
 	}
 
 	componentDidMount() {
@@ -94,7 +132,14 @@ class DesignerContent extends React.Component {
 							to see how it would look like in the in-game chat.
 						</Typography>
 
-						<SampChatTextPreview content="{00FF00}You {CCFFCC}healed yourself {00FF00}for free!"/>
+						{this.getEntryElements(this.state.entries).map(el => el)}
+
+						<Button size="large" variant="contained" color="primary" startIcon={<AddIcon/>}
+								onClick={this.handleAddNewChatMessage}
+							>
+							Add
+						</Button>
+							
 					</Route>
 					<Route path="/dialog">
 						<Typography variant="h1">

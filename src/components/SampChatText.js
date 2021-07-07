@@ -30,49 +30,57 @@ const SampChatText = (props) => {
 
 	const classes = useStyles();
 
-	let text = props.content || "";
-	const textParts = [];
-	let addText = (t) => {
+	const [textParts, setTextParts] = React.useState([]);
 
-		const nbsp = "\u00A0";
+	const update = () => {
+		const parts = [];
+		let text = props.content || "";
+		let addText = (t) => {
 
-		if (t.startsWith(" "))
-			t = nbsp + t.substring(1);
-		if (t.endsWith(" "))
-			t = t.substring(0, t.length - 1) + nbsp;
+			const nbsp = "\u00A0";
 
-		textParts.push( (
-			<span className={classes.text} style={ { color: currentColor } }>{t}</span>
-		));
+			if (t.startsWith(" "))
+				t = nbsp + t.substring(1);
+			if (t.endsWith(" "))
+				t = t.substring(0, t.length - 1) + nbsp;
+
+			parts.push( (
+				<span className={classes.text} style={ { color: currentColor } }>{t}</span>
+			));
+		};
+
+		let removeColors = (props.keepColors === undefined) ? true : !props.keepColors;
+
+		let currentColor = props.defaultColor || "#ffffff";
+
+		if (text.length > 0) {
+		
+			let reg = /\{([a-fA-F0-9]{6})\}/g;
+			let result;
+			let prevStart = 0;
+			const getPrevStart = () => {
+				return (removeColors || prevStart < 8) ? prevStart : prevStart - 8;
+			}
+
+			while((result = reg.exec(text)))
+			{
+				if (reg.lastIndex !== undefined)
+				{
+					if (result.index !== 0)
+						addText(text.substring(getPrevStart(), result.index));
+
+					prevStart = reg.lastIndex;
+					currentColor = `#${result[1]}`;
+				}
+			}
+			addText(text.substring(getPrevStart()));
+		}
+		setTextParts(parts);
 	};
 
-	let removeColors = (props.keepColors === undefined) ? true : !props.keepColors;
+	React.useEffect(update, [props.content]);
 
-	let currentColor = props.defaultColor || "#ffffff";
-
-	if (text.length > 0) {
 	
-		let reg = /\{([a-fA-F0-9]{6})\}/g;
-		let result;
-		let prevStart = 0;
-		const getPrevStart = () => {
-			return (removeColors || prevStart < 8) ? prevStart : prevStart - 8;
-		}
-
-		while((result = reg.exec(text)))
-		{
-			if (reg.lastIndex !== undefined)
-			{
-				if (result.index !== 0)
-					addText(text.substring(getPrevStart(), result.index));
-
-				prevStart = reg.lastIndex;
-				currentColor = `#${result[1]}`;
-			}
-		}
-		addText(text.substring(getPrevStart()));
-	}
-
 	return (
 		<Typography paragraph className={ classes.typography }>
 			<span>{textParts}</span>
