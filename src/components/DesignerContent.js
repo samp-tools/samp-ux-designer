@@ -87,9 +87,15 @@ class DesignerContent extends React.Component {
 			]
 		};
 
-		this.handleAddNewChatMessage = () => {
+		this.handleAddNewChatMessage = (front) => {
 			const entries = this.state.entries;
-			entries.push( { id: uuidv4(), content: "Chat message {FF0000}content..." } );
+			const newElem = { id: uuidv4(), content: "Chat message {FF0000}content..." };
+
+			if (front)
+				entries.unshift(newElem);
+			else
+				entries.push(newElem);
+
 			this.setState( { entries } )
 		}
 
@@ -117,6 +123,14 @@ class DesignerContent extends React.Component {
 	render() {
 		const { classes } = this.props;
 
+		const addBtn = (front = false) => (
+			<Button style={ { marginBottom: 10, marginTop: 10 } } size="large" variant="contained" color="primary" startIcon={<AddIcon/>}
+					onClick={() => this.handleAddNewChatMessage(front)}
+				>
+				Add{front ? " to the top" : ""}
+			</Button>
+		);
+
 		return (
 			<main className={classes.content}>
 				<div className={classes.toolbar} />
@@ -132,13 +146,10 @@ class DesignerContent extends React.Component {
 							to see how it would look like in the in-game chat.
 						</Typography>
 
+						{addBtn(true)}
 						{this.getEntryElements(this.state.entries).map(el => el)}
-
-						<Button size="large" variant="contained" color="primary" startIcon={<AddIcon/>}
-								onClick={this.handleAddNewChatMessage}
-							>
-							Add
-						</Button>
+						{addBtn()}
+						
 							
 					</Route>
 					<Route path="/dialog">
