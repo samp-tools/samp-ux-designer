@@ -14,6 +14,7 @@ import {
 
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Delete';
+import SearchIcon from '@material-ui/icons/Search';
 
 import PropTypes from 'prop-types';
 
@@ -30,6 +31,9 @@ const useStyles = theme => ({
 		// necessary for content to be below app bar
 		...theme.mixins.toolbar,
 	},
+	topContentBar: {
+		alignItems: 'center',
+	},
 	content: {
 		flexGrow: 1,
 		padding: theme.spacing(3),
@@ -41,6 +45,7 @@ class SampChatTextPreview extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			enumIdx: this.props.enumIdx || "",
 			inputText: this.props.content || ""
 		};
 
@@ -49,18 +54,28 @@ class SampChatTextPreview extends React.Component {
 		this.handleInputTextChanged = (e) => {
 			this.setState({ inputText: e.target.value });
 		}
+
+		this.handleEnumIdxChanged = (e) => {
+			this.setState({ enumIdx: e.target.value });
+		}
 	}
 
 	render() {
 		return (
 			<Grid style={ { marginBottom: 10 } } container spacing={2}>
-				<Grid container justifyContent="space-between" item xs={12} md={6}>
+				<Grid container justifyContent="space-between" spacing={1} item xs={12} md={6}>
 					<Grid item xs={2} sm={1} md={2} lg={1}>
 						<IconButton onClick={() => this.props.onRemoved()} >
 							<RemoveIcon/>
 						</IconButton>
 					</Grid>
-					<Grid item xs={10} sm={11} md={10} lg={11}>
+					<Grid item xs={3}>
+						<TextField style={ { fontFamily: "Consolas" } } variant="filled" label="C++ identifier (enum name)"
+								value={this.state.enumIdx || ""}
+								onChange={this.handleEnumIdxChanged}
+							/>
+					</Grid>
+					<Grid item xs={7} sm={8} md={7} lg={8}>
 						<TextField ref={this.textField} fullWidth variant="filled" label="SAMP Chat Text"
 								value={this.state.inputText || ""}
 								onChange={this.handleInputTextChanged}
@@ -81,9 +96,10 @@ class DesignerContent extends React.Component {
 		super(props);
 
 		this.state = {
+			searchPattern: "",
 			entries: [
-				{ id: uuidv4(), content: "{00FF00}You {CCFFCC}healed yourself {00FF00}for free!" },
-				{ id: uuidv4(), content: "Welcome to the {FF0000}Gold {FFFF00}Party {00CCFF}Polska {FFFFFF}server!" },
+				{ id: uuidv4(), enumIdx: "TXT_HEALED", content: "{00FF00}You {CCFFCC}healed yourself {00FF00}for free!" },
+				{ id: uuidv4(), enumIdx: "TXT_WELCOME", content: "Welcome to the {FF0000}Gold {FFFF00}Party {00CCFF}Polska {FFFFFF}server!" },
 			]
 		};
 
@@ -103,16 +119,30 @@ class DesignerContent extends React.Component {
 			const entries = this.state.entries.filter(entry => entry.id !== uuid);
 			this.setState( { entries } )
 		}
+		this.handleSearchPatternChanged = (e) => {
+			this.setState( { searchPattern: e.target.value || "" } )
+		}
 
 		this.enterUrl = (url) => {
 			this.props.history.push(url);
 		}
 
-		this.getEntryElements = (entries) => (
-			entries.map((entry, index) => (
-				<SampChatTextPreview key={entry.id} content={entry.content} onRemoved={() => this.handleRemoveChatMessage(entry.id)}/>
-			))
-		);
+		this.getEntryElements = (entries) => {
+			const p = this.state.searchPattern;
+			const filtered = p !== "" ? entries.filter(e => (e.enumIdx || "").toLowerCase().search(p.toLowerCase()) != -1) : entries;
+			const result = filtered.map((entry, index) => (
+				<SampChatTextPreview
+						key={entry.id}
+						enumIdx={entry.enumIdx}
+						content={entry.content}
+						onRemoved={() => this.handleRemoveChatMessage(entry.id)}/>
+			));
+
+			if (result.length > 0)
+				return result;
+			else
+				return (<Typography paragraph>No entries{entries.length > 0 ? ` that match pattern "${p}"` : ""}.</Typography>);
+		};
 	}
 
 	componentDidMount() {
@@ -146,8 +176,17 @@ class DesignerContent extends React.Component {
 							to see how it would look like in the in-game chat.
 						</Typography>
 
-						{addBtn(true)}
-						{this.getEntryElements(this.state.entries).map(el => el)}
+						<Grid container spacing={2} className={classes.topContentBar}>
+							<Grid item xs="auto">
+								{addBtn(true)}
+							</Grid>
+							<Grid item xs={3}>
+								<TextField fullWidth InputProps={{ startAdornment: <SearchIcon/> }} placeholder="Filter by enum name"
+										onChange={this.handleSearchPatternChanged}/>
+							</Grid>
+						</Grid>
+						
+						{this.getEntryElements(this.state.entries)}
 						{addBtn()}
 						
 							
