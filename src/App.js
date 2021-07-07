@@ -30,7 +30,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 // import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
-import ChatIcon from '@material-ui/icons/ViewHeadline';
+import ChatIcon from '@material-ui/icons/Chat';
 import DialogIcon from '@material-ui/icons/ListAlt';
 
 const drawerWidth = 240;
