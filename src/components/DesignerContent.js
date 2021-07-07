@@ -49,7 +49,7 @@ class SampChatTextPreview extends React.Component {
 			<Grid container spacing={2}>
 				<Grid item xs={12} md={6}>
 					<TextField fullWidth variant="filled" label="SAMP Chat Text"
-							value={this.props.content || ""}
+							defaultValue={this.props.content || ""}
 							onChange={this.handleInputTextChanged}
 						/>
 				</Grid>
