@@ -36,7 +36,7 @@ class SampChatTextPreview extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			inputText: ""
+			inputText: this.props.content || ""
 		};
 
 		this.handleInputTextChanged = (e) => {
@@ -48,7 +48,8 @@ class SampChatTextPreview extends React.Component {
 		return (
 			<Grid container spacing={2}>
 				<Grid item xs={12} md={6}>
-					<TextField fullWidth variant="filled" label="Enter SAMP chat text"
+					<TextField fullWidth variant="filled" label="SAMP Chat Text"
+							value={this.props.content || ""}
 							onChange={this.handleInputTextChanged}
 						/>
 				</Grid>
@@ -93,7 +94,7 @@ class DesignerContent extends React.Component {
 							to see how it would look like in the in-game chat.
 						</Typography>
 
-						<SampChatTextPreview />
+						<SampChatTextPreview content="{00FF00}You {CCFFCC}healed yourself {00FF00}for free!"/>
 					</Route>
 					<Route path="/dialog">
 						<Typography variant="h1">
