@@ -81,7 +81,9 @@ class SampChatTextPreview extends React.Component {
 						<TextField variant="filled" label="C++ identifier (enum name)"
 								value={this.state.enumIdx || ""}
 								onChange={this.handleEnumIdxChanged}
-							/>
+							>
+							<b>Chuj</b>
+						</TextField>
 					</Grid>
 					<Grid item xs={6} sm={7} md={6} lg={7}>
 						<TextField ref={this.textField} fullWidth variant="filled" label="SAMP Chat Text"
@@ -172,7 +174,7 @@ class DesignerContent extends React.Component {
 
 	generateJsonContent() {
 		return JSON.stringify({
-			chatMessages: this.state.entries.map(e => ({ id: e.enumIdx, content: e.content }))
+			chatMessages: this.state.entries.map(e => ({ id: e.enumIdx || "", content: e.content || "" }))
 		}, null, '\t');
 	}
 
@@ -183,8 +185,8 @@ class DesignerContent extends React.Component {
 			{
 				entries: jc.chatMessages.map(cm => ({
 					id: uuidv4(),
-					enumIdx: cm.id,
-					content: cm.content
+					enumIdx: cm.id || "",
+					content: cm.content || ""
 				}))
 			}
 		);
