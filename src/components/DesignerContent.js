@@ -13,6 +13,8 @@ import {
 } from '@material-ui/core';
 
 import AddIcon from '@material-ui/icons/Add';
+import UpIcon from '@material-ui/icons/ArrowUpward';
+import DownIcon from '@material-ui/icons/ArrowDownward';
 import RemoveIcon from '@material-ui/icons/Delete';
 import SearchIcon from '@material-ui/icons/Search';
 
@@ -64,10 +66,16 @@ class SampChatTextPreview extends React.Component {
 		return (
 			<Grid style={ { marginBottom: 10 } } container spacing={2}>
 				<Grid container justifyContent="space-between" spacing={1} item xs={12} md={6}>
-					<Grid item xs={2} sm={1} md={2} lg={1}>
-						<IconButton onClick={() => this.props.onRemoved()} >
-							<RemoveIcon/>
-						</IconButton>
+					<Grid container item xs={3} sm={2} md={3} lg={2}>
+						<Grid item xs={4}>
+							<IconButton onClick={() => this.props.onMovedUp()} > 	<UpIcon/> 		</IconButton>
+						</Grid>
+						<Grid item xs={4}>
+							<IconButton onClick={() => this.props.onMovedDown()} > 	<DownIcon/> 	</IconButton>
+						</Grid>
+						<Grid item xs={4}>
+							<IconButton onClick={() => this.props.onRemoved()} > 	<RemoveIcon/> 	</IconButton>
+						</Grid>
 					</Grid>
 					<Grid item xs={3}>
 						<TextField style={ { fontFamily: "Consolas" } } variant="filled" label="C++ identifier (enum name)"
@@ -75,7 +83,7 @@ class SampChatTextPreview extends React.Component {
 								onChange={this.handleEnumIdxChanged}
 							/>
 					</Grid>
-					<Grid item xs={7} sm={8} md={7} lg={8}>
+					<Grid item xs={6} sm={7} md={6} lg={7}>
 						<TextField ref={this.textField} fullWidth variant="filled" label="SAMP Chat Text"
 								value={this.state.inputText || ""}
 								onChange={this.handleInputTextChanged}
@@ -123,6 +131,21 @@ class DesignerContent extends React.Component {
 			this.setState( { searchPattern: e.target.value || "" } )
 		}
 
+		this.moveEntry = (entryIndex, newEntryIndex) =>
+		{
+			
+			if (entryIndex < 0 || entryIndex >= this.state.entries.length)
+			return; // ignore
+			
+			if (newEntryIndex < 0 || newEntryIndex >= this.state.entries.length)
+			return; // ignore
+			
+			const entries = this.state.entries;
+			entries.splice(newEntryIndex, 0, entries.splice(entryIndex, 1)[0]);
+
+			this.setState( { entries });
+		}
+
 		this.enterUrl = (url) => {
 			this.props.history.push(url);
 		}
@@ -135,7 +158,9 @@ class DesignerContent extends React.Component {
 						key={entry.id}
 						enumIdx={entry.enumIdx}
 						content={entry.content}
-						onRemoved={() => this.handleRemoveChatMessage(entry.id)}/>
+						onRemoved={() => this.handleRemoveChatMessage(entry.id)}
+						onMovedUp={() => this.moveEntry(index, index - 1)}
+						onMovedDown={() => this.moveEntry(index, index + 1)} />
 			));
 
 			if (result.length > 0)
