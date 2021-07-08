@@ -145,6 +145,26 @@ class DesignerContent extends React.Component {
 		};
 	}
 
+	generateJsonContent() {
+		return JSON.stringify({
+			chatMessages: this.state.entries.map(e => ({ id: e.enumIdx, content: e.content }))
+		}, null, '\t');
+	}
+
+	loadFromJson(jsonContent) {
+		const jc = JSON.parse(jsonContent);
+		console.log(jc);
+		this.setState(
+			{
+				entries: jc.chatMessages.map(cm => ({
+					id: uuidv4(),
+					enumIdx: cm.id,
+					content: cm.content
+				}))
+			}
+		);
+	}
+
 	componentDidMount() {
 		this.props.customRef(this);
 	}
