@@ -78,7 +78,7 @@ class SampChatTextPreview extends React.Component {
 						</Grid>
 					</Grid>
 					<Grid item xs={3}>
-						<TextField style={ { fontFamily: "Consolas" } } variant="filled" label="C++ identifier (enum name)"
+						<TextField variant="filled" label="C++ identifier (enum name)"
 								value={this.state.enumIdx || ""}
 								onChange={this.handleEnumIdxChanged}
 							/>
