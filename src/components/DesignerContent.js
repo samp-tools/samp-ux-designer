@@ -55,10 +55,12 @@ class SampChatTextPreview extends React.Component {
 
 		this.handleInputTextChanged = (e) => {
 			this.setState({ inputText: e.target.value });
+			this.props.onChange(this.state);
 		}
 
 		this.handleEnumIdxChanged = (e) => {
 			this.setState({ enumIdx: e.target.value });
+			this.props.onChange(this.state);
 		}
 	}
 
@@ -132,6 +134,12 @@ class DesignerContent extends React.Component {
 		this.handleSearchPatternChanged = (e) => {
 			this.setState( { searchPattern: e.target.value || "" } )
 		}
+		this.handleEntryChanged = (entryIndex, newValue) => {
+			const entries = this.state.entries;
+			entries[entryIndex].enumIdx = newValue.enumIdx || "";
+			entries[entryIndex].content = newValue.inputText || "";
+			this.setState({ entries });
+		}
 
 		this.moveEntry = (entryIndex, newEntryIndex) =>
 		{
@@ -160,6 +168,7 @@ class DesignerContent extends React.Component {
 						key={entry.id}
 						enumIdx={entry.enumIdx}
 						content={entry.content}
+						onChange={(val) => this.handleEntryChanged(index, val)}
 						onRemoved={() => this.handleRemoveChatMessage(entry.id)}
 						onMovedUp={() => this.moveEntry(index, index - 1)}
 						onMovedDown={() => this.moveEntry(index, index + 1)} />
