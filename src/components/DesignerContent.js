@@ -85,7 +85,6 @@ class SampChatTextPreview extends React.Component {
 								value={this.state.enumIdx || ""}
 								onChange={this.handleEnumIdxChanged}
 							>
-							<b>Chuj</b>
 						</TextField>
 					</Grid>
 					<Grid item xs={6} sm={7} md={6} lg={7}>
@@ -139,8 +138,6 @@ class DesignerContent extends React.Component {
 			const entries = this.state.entries;
 			entries[entryIndex].enumIdx = newValue.enumIdx || "";
 			entries[entryIndex].content = newValue.inputText || "";
-			console.log(`Changed state of "${entryIndex}" to `, newValue);
-			console.log(entries);
 			this.setState({ entries });
 		}
 
@@ -192,7 +189,6 @@ class DesignerContent extends React.Component {
 
 	loadFromJson(jsonContent) {
 		const jc = JSON.parse(jsonContent);
-		console.log(jc);
 		this.setState(
 			{
 				entries: jc.chatMessages.map(cm => ({
