@@ -23,6 +23,7 @@ import PropTypes from 'prop-types';
 import SampChatText from './SampChatText'
 
 import { withStyles } from '@material-ui/core/styles';
+import { CollectionsBookmarkRounded } from '@material-ui/icons';
 
 const useStyles = theme => ({
 	toolbar: {
@@ -55,12 +56,12 @@ class SampChatTextPreview extends React.Component {
 
 		this.handleInputTextChanged = (e) => {
 			this.setState({ inputText: e.target.value });
-			this.props.onChange(this.state);
+			this.props.onChange( { enumIdx: this.state.enumIdx, inputText: e.target.value } );
 		}
 
 		this.handleEnumIdxChanged = (e) => {
 			this.setState({ enumIdx: e.target.value });
-			this.props.onChange(this.state);
+			this.props.onChange( { enumIdx: e.target.value, inputText: this.state.inputText } );
 		}
 	}
 
@@ -138,6 +139,8 @@ class DesignerContent extends React.Component {
 			const entries = this.state.entries;
 			entries[entryIndex].enumIdx = newValue.enumIdx || "";
 			entries[entryIndex].content = newValue.inputText || "";
+			console.log(`Changed state of "${entryIndex}" to `, newValue);
+			console.log(entries);
 			this.setState({ entries });
 		}
 
