@@ -12,6 +12,7 @@ import {
 	Button
 } from '@material-ui/core';
 
+
 import AddIcon from '@material-ui/icons/Add';
 import SearchIcon from '@material-ui/icons/Search';
 
@@ -46,9 +47,11 @@ class DesignerContent extends React.Component {
 
 		this.state = {
 			searchPattern: "",
-			palette: [
 
+			palette: [
+				{ name: "Dollarbill", value: "#85bb65" }
 			],
+
 			entries: [
 				{ id: uuidv4(), enumIdx: "TXT_HEALED", content: "{00FF00}You {CCFFCC}healed yourself {00FF00}for free!" },
 				{ id: uuidv4(), enumIdx: "TXT_WELCOME", content: "Welcome to the {FF0000}Gold {FFFF00}Party {00CCFF}Polska {FFFFFF}server!" },
