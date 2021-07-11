@@ -19,9 +19,6 @@ import {
 	List,           CssBaseline,        Typography,
 	Divider,        IconButton,         ListItem,
 	ListItemIcon,   ListItemText,       Tooltip,
-	Dialog,         DialogTitle,
-	DialogContent,  DialogContentText,  DialogActions,
-	Button
 } from '@material-ui/core';
 
 import {
@@ -38,6 +35,8 @@ import LoadIcon from '@material-ui/icons/CloudUpload';
 
 import ChatIcon from '@material-ui/icons/Chat';
 import DialogIcon from '@material-ui/icons/ListAlt';
+
+import CustomDialog from './components/CustomDialog';
 
 const drawerWidth = 240;
 
@@ -92,41 +91,7 @@ const useStyles = theme => ({
 	}
 });
 
-class InvalidFileDialog extends React.Component {
 
-	constructor(props) { 
-		super(props);
-
-		this.state = {
-			open: false
-		}
-
-		this.setOpen = (o) => {
-			this.setState({ open: o });
-		}
-	}
-
-	render() {
-		return (<Dialog
-			open={this.state.open}
-			onClose={() => this.setOpen(false)}
-			aria-labelledby="alert-dialog-title"
-			aria-describedby="alert-dialog-description"
-		>
-			<DialogTitle id="alert-dialog-title">{"Invalid file"}</DialogTitle>
-			<DialogContent>
-				<DialogContentText id="alert-dialog-description">
-					You specified file with a invalid format. Only <tt>".json"</tt> files are supported.
-				</DialogContentText>
-			</DialogContent>
-			<DialogActions>
-				<Button onClick={() => this.setOpen(false)} color="primary" autoFocus>
-					OK
-				</Button>
-			</DialogActions>
-		</Dialog>);
-	}
-}
 
 class App extends React.Component {
 
@@ -136,9 +101,13 @@ class App extends React.Component {
 		this.state = {
 			open: false,
 			toolIndex: 0,
+			dialog: {
+				title: "",
+				content: ""
+			}
 		};
 
-		this.dialogs = {};
+		this.dialog = {};
 
 		this.tools = [
 			{
@@ -152,6 +121,11 @@ class App extends React.Component {
 				icon: DialogIcon
 			}
 		];
+
+		this.displayDialog = (title, content) => {
+			this.setState( { dialog: { title, content } } );
+			this.dialog.ref.setOpen(true);
+		}
 
 		this.actions = [
 			{
@@ -182,7 +156,10 @@ class App extends React.Component {
 
 						reader.readAsText(file);
 				} else {
-					this.dialogs.invalidFile.setOpen(true);
+					this.displayDialog(
+						"Invalid file",
+						[ "You specified file with a invalid format. Only ", <tt>".json"</tt>, " files are supported." ]
+					);
 				}
 				document.getElementById("LoadFileInput").value = "";
 		}
@@ -284,8 +261,13 @@ class App extends React.Component {
 							))}
 						</List>
 					</Drawer>
-					<DesignerContent customRef={ref => { this.designer = ref } } />
-					<InvalidFileDialog ref={ (ref) => this.dialogs.invalidFile = ref }/>
+					<DesignerContent
+						customRef={ref => { this.designer = ref } }
+						onError={(title, content) => this.displayDialog(title, content)}
+						/>
+					<CustomDialog title={this.state.dialog.title} ref={ (ref) => this.dialog.ref = ref }>
+						{this.state.dialog.content}
+					</CustomDialog>
 				</div>
 			</Router>
 		);

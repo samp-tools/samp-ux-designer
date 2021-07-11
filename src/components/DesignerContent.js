@@ -9,21 +9,17 @@ import {
 	Typography,
 	TextField,
 	Grid,
-	Button, IconButton
+	Button
 } from '@material-ui/core';
 
 import AddIcon from '@material-ui/icons/Add';
-import UpIcon from '@material-ui/icons/ArrowUpward';
-import DownIcon from '@material-ui/icons/ArrowDownward';
-import RemoveIcon from '@material-ui/icons/Delete';
 import SearchIcon from '@material-ui/icons/Search';
 
 import PropTypes from 'prop-types';
 
-import SampChatText from './SampChatText'
+import SampChatTextPreview from './SampChatTextPreview'
 
 import { withStyles } from '@material-ui/core/styles';
-import { CollectionsBookmarkRounded } from '@material-ui/icons';
 
 const useStyles = theme => ({
 	toolbar: {
@@ -43,65 +39,6 @@ const useStyles = theme => ({
 	}
 });
 
-class SampChatTextPreview extends React.Component {
-
-	constructor(props) {
-		super(props);
-		this.state = {
-			enumIdx: this.props.enumIdx || "",
-			inputText: this.props.content || ""
-		};
-
-		this.textField = React.createRef();
-
-		this.handleInputTextChanged = (e) => {
-			this.setState({ inputText: e.target.value });
-			this.props.onChange( { enumIdx: this.state.enumIdx, inputText: e.target.value } );
-		}
-
-		this.handleEnumIdxChanged = (e) => {
-			this.setState({ enumIdx: e.target.value });
-			this.props.onChange( { enumIdx: e.target.value, inputText: this.state.inputText } );
-		}
-	}
-
-	render() {
-		return (
-			<Grid style={ { marginBottom: 10 } } container spacing={2}>
-				<Grid container justifyContent="space-between" spacing={1} item xs={12} md={6}>
-					<Grid container item xs={3} sm={2} md={3} lg={2}>
-						<Grid item xs={4}>
-							<IconButton onClick={() => this.props.onMovedUp()} > 	<UpIcon/> 		</IconButton>
-						</Grid>
-						<Grid item xs={4}>
-							<IconButton onClick={() => this.props.onMovedDown()} > 	<DownIcon/> 	</IconButton>
-						</Grid>
-						<Grid item xs={4}>
-							<IconButton onClick={() => this.props.onRemoved()} > 	<RemoveIcon/> 	</IconButton>
-						</Grid>
-					</Grid>
-					<Grid item xs={3}>
-						<TextField variant="filled" label="C++ identifier (enum name)"
-								value={this.state.enumIdx || ""}
-								onChange={this.handleEnumIdxChanged}
-							>
-						</TextField>
-					</Grid>
-					<Grid item xs={6} sm={7} md={6} lg={7}>
-						<TextField ref={this.textField} fullWidth variant="filled" label="SAMP Chat Text"
-								value={this.state.inputText || ""}
-								onChange={this.handleInputTextChanged}
-							/>
-					</Grid>
-				</Grid>
-				<Grid item xs={12} md={6}>
-					<SampChatText content={this.state.inputText}/>
-				</Grid>
-			</Grid>
-		);
-	}
-}
-
 
 class DesignerContent extends React.Component {
 	constructor(props) {
@@ -109,6 +46,9 @@ class DesignerContent extends React.Component {
 
 		this.state = {
 			searchPattern: "",
+			palette: [
+
+			],
 			entries: [
 				{ id: uuidv4(), enumIdx: "TXT_HEALED", content: "{00FF00}You {CCFFCC}healed yourself {00FF00}for free!" },
 				{ id: uuidv4(), enumIdx: "TXT_WELCOME", content: "Welcome to the {FF0000}Gold {FFFF00}Party {00CCFF}Polska {FFFFFF}server!" },
@@ -141,14 +81,22 @@ class DesignerContent extends React.Component {
 			this.setState({ entries });
 		}
 
+		this.error = (title, content) => this.props.onError(title, content);
+
 		this.moveEntry = (entryIndex, newEntryIndex) =>
 		{
-			
+			if (this.state.searchPattern !== "")
+			{
+				this.error("Move forbidden", ["Could not move if the ", <tt>filter</tt>, " is set.", <br/>, "Please remove the filter text first."]);
+				return;
+			}
+
+
 			if (entryIndex < 0 || entryIndex >= this.state.entries.length)
-			return; // ignore
+				return; // ignore
 			
 			if (newEntryIndex < 0 || newEntryIndex >= this.state.entries.length)
-			return; // ignore
+				return; // ignore
 			
 			const entries = this.state.entries;
 			entries.splice(newEntryIndex, 0, entries.splice(entryIndex, 1)[0]);
@@ -247,12 +195,22 @@ class DesignerContent extends React.Component {
 							
 					</Route>
 					<Route path="/dialog">
-						<Typography variant="h1">
+						<Typography variant="h3">
 							Dialogs
 						</Typography>
 						<Typography paragraph>
 							Work in progress...
 						</Typography>
+					</Route>
+					<Route path="/palette">
+						<Typography variant="h3">
+							Color palette
+						</Typography>
+						<Typography paragraph>
+							Enter colors:
+						</Typography>
+
+						{}
 					</Route>
 				</Switch>
 			</main>
