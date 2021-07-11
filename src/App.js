@@ -172,9 +172,7 @@ class App extends React.Component {
 
 		this.loadFile = () => {
 				
-				console.log(document.getElementById("LoadFileInput").files);
 				let file = document.getElementById("LoadFileInput").files[0];
-				console.log(file.type);
 				if (file.type === "application/json") {
 						let reader = new FileReader();
 
