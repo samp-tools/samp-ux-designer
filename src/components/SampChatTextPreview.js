@@ -115,67 +115,69 @@ export default class SampChatTextPreview extends React.Component {
 
 	render() {
 		return (
-			<Grid style={ { marginBottom: 10 } } container spacing={2}>
-				<Grid container justifyContent="space-between" spacing={1} item xs={12} md={6}>
-					<Grid container item xs={3} sm={2} md={3} lg={2}>
-						<Grid item xs={4}>
-							<IconButton onClick={() => this.props.onMovedUp()} > 	<UpIcon/> 		</IconButton>
+			<div>
+				<Grid style={ { marginBottom: 10 } } container spacing={2}>
+					<Grid container justifyContent="space-between" spacing={1} item xs={12} md={6}>
+						<Grid container item xs={3} sm={2} md={3} lg={2}>
+							<Grid item xs={4}>
+								<IconButton onClick={() => this.props.onMovedUp()} > 	<UpIcon/> 		</IconButton>
+							</Grid>
+							<Grid item xs={4}>
+								<IconButton onClick={() => this.props.onMovedDown()} > 	<DownIcon/> 	</IconButton>
+							</Grid>
+							<Grid item xs={4}>
+								<IconButton onClick={() => this.props.onRemoved()} > 	<RemoveIcon/> 	</IconButton>
+							</Grid>
 						</Grid>
-						<Grid item xs={4}>
-							<IconButton onClick={() => this.props.onMovedDown()} > 	<DownIcon/> 	</IconButton>
+						<Grid item xs={3}>
+							<TextField variant="filled" label="C++ identifier (enum name)"
+									value={this.state.enumIdx || ""}
+									onChange={this.handleEnumIdxChanged}
+									/>
 						</Grid>
-						<Grid item xs={4}>
-							<IconButton onClick={() => this.props.onRemoved()} > 	<RemoveIcon/> 	</IconButton>
-						</Grid>
-					</Grid>
-					<Grid item xs={3}>
-						<TextField variant="filled" label="C++ identifier (enum name)"
-								value={this.state.enumIdx || ""}
-								onChange={this.handleEnumIdxChanged}
-							/>
-					</Grid>
-					<Grid item xs={6} sm={7} md={6} lg={7}>
-						<TextField ref={this.textField} fullWidth variant="filled" label="SAMP Chat Text"
-								value={this.state.inputText || ""}
-								onChange={this.handleInputTextChanged}
-								onFocus={this.handleFocus}
-								onDoubleClick={this.handleSelectionUpdate}
-								onKeyDown={this.handleSelectionUpdate}
-								onKeyUp={this.handleSelectionUpdate}
-								onMouseUp={this.handleSelectionUpdate}	
-							/>
-						<Popover open={this.state.editingColorMode} anchorEl={() => this.textField.current}
-								ref={this.colorPicker}
-								anchorOrigin={{
-									vertical: 'bottom',
-									horizontal: 'center',
-								}}
-								transformOrigin={{
-									vertical: 'top',
-									horizontal: 'center',
-								}}
-								onClose={(e) => {
-									this.setState( { editingColorMode: false } );
-									return true;
-								}}
-								// onKeyDown={this.handleColorPickerKeyDown}
-								disableAutoFocus={true}
- 								disableEnforceFocus={true}
-								// disableEscapeKeyDown={true}
-								disableRestoreFocus={true}
-							>
-							<ColorBox
-									disableAlpha
-									value={this.state.currentColor}
-									onChange={this.handleColorChange}
+						<Grid item xs={6} sm={7} md={6} lg={7}>
+							<TextField ref={this.textField} fullWidth variant="filled" label="SAMP Chat Text"
+									value={this.state.inputText || ""}
+									onChange={this.handleInputTextChanged}
+									onFocus={this.handleFocus}
+									onDoubleClick={this.handleSelectionUpdate}
+									onKeyDown={this.handleSelectionUpdate}
+									onKeyUp={this.handleSelectionUpdate}
+									onMouseUp={this.handleSelectionUpdate}	
 								/>
-						</Popover>
+						</Grid>
+					</Grid>
+					<Grid item xs={12} md={6}>
+						<SampChatText content={this.state.inputText}/>
 					</Grid>
 				</Grid>
-				<Grid item xs={12} md={6}>
-					<SampChatText content={this.state.inputText}/>
-				</Grid>
-			</Grid>
+				<Popover open={this.state.editingColorMode} anchorEl={() => this.textField.current}
+						ref={this.colorPicker}
+						anchorOrigin={{
+							vertical: 'bottom',
+							horizontal: 'center',
+						}}
+						transformOrigin={{
+							vertical: 'top',
+							horizontal: 'center',
+						}}
+						onClose={(e) => {
+							this.setState( { editingColorMode: false } );
+							return true;
+						}}
+						// onKeyDown={this.handleColorPickerKeyDown}
+						disableAutoFocus={true}
+						disableEnforceFocus={true}
+						// disableEscapeKeyDown={true}
+						disableRestoreFocus={true}
+					>
+					<ColorBox
+							disableAlpha
+							value={this.state.currentColor}
+							onChange={this.handleColorChange}
+						/>
+				</Popover>
+			</div>
 		);
 	}
 }
