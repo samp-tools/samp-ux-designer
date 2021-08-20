@@ -81,7 +81,6 @@ class DesignerContent extends React.Component {
 			const entries = this.state.entries;
 			entries[entryIndex].enumIdx = newValue.enumIdx || "";
 			entries[entryIndex].content = newValue.content || "";
-			console.log(`Updated entry ${entryIndex} to: `, entries[entryIndex]);
 			this.setState({ entries });
 		}
 

@@ -5,9 +5,6 @@ import {
 	IconButton,
 	TextField,
 	Popover,
-	FormControl,
-	InputLabel,
-	Select
 } from '@material-ui/core';
 
 import {

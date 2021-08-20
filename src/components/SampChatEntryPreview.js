@@ -2,9 +2,7 @@ import React from 'react';
 
 import {
 	Grid,
-	IconButton,
 	TextField,
-	Popover,
 	FormControl,
 	InputLabel,
 	Select
