@@ -18,7 +18,7 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import PropTypes from 'prop-types';
 
-import SampChatTextPreview from './SampChatTextPreview'
+import SampChatEntry from './SampChatEntry'
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -80,7 +80,8 @@ class DesignerContent extends React.Component {
 		this.handleEntryChanged = (entryIndex, newValue) => {
 			const entries = this.state.entries;
 			entries[entryIndex].enumIdx = newValue.enumIdx || "";
-			entries[entryIndex].content = newValue.inputText || "";
+			entries[entryIndex].content = newValue.content || "";
+			console.log(`Updated entry ${entryIndex} to: `, entries[entryIndex]);
 			this.setState({ entries });
 		}
 
@@ -113,16 +114,16 @@ class DesignerContent extends React.Component {
 
 		this.getEntryElements = (entries) => {
 			const p = this.state.searchPattern;
-			const filtered = p !== "" ? entries.filter(e => (e.enumIdx || "").toLowerCase().search(p.toLowerCase()) !== -1) : entries;
+			const filtered = p !== "" ? entries.filter(e => (e.enumIdx || "").toLowerCase().indexOf(p.toLowerCase()) !== -1) : entries;
 			const result = filtered.map((entry, index) => (
-				<SampChatTextPreview
-						key={entry.id}
-						enumIdx={entry.enumIdx}
-						content={entry.content}
-						onChange={(val) => this.handleEntryChanged(index, val)}
-						onRemoved={() => this.handleRemoveChatMessage(entry.id)}
-						onMovedUp={() => this.moveEntry(index, index - 1)}
-						onMovedDown={() => this.moveEntry(index, index + 1)} />
+				<SampChatEntry
+						key			={entry.id}
+						enumIdx		={entry.enumIdx}
+						content		={entry.content}
+						onChange	={(val) => this.handleEntryChanged(index, val)}
+						onRemoved	={() => this.handleRemoveChatMessage(entry.id)}
+						onMovedUp	={() => this.moveEntry(index, index - 1)}
+						onMovedDown	={() => this.moveEntry(index, index + 1)} />
 			));
 
 			if (result.length > 0)
