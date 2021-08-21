@@ -45,7 +45,7 @@ const SampChatText = (props) => {
 				t = t.substring(0, t.length - 1) + nbsp;
 
 			parts.push( (
-				<span className={classes.text} style={ { color: currentColor } }>{t}</span>
+				<span className={classes.text} style={ { whiteSpace: 'pre-wrap', color: currentColor } }>{t.replaceAll('\\n', '\n')}</span>
 			));
 		};
 
