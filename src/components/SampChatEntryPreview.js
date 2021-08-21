@@ -134,7 +134,7 @@ export default class SampChatEntryPreview
 
 	render() {
 		return (
-			<Grid container item={this.props.item ? true : undefined} spacing={1}>
+			<Grid style={this.props.style} container item={this.props.item ? true : undefined} spacing={1}>
 				<Grid item xs={12} md={6}>
 					<TextField ref={this.textField} fullWidth variant="filled" label={`${this.languageDisplayName()} - SAMP Chat Text`}
 							value			={this.state.content || ""}

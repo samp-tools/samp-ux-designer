@@ -66,6 +66,7 @@ export default class SampChatEntry extends React.Component {
 			if (!this.textField || !this.textField.object)
 				return;
 
+			this.setState( { currentColor: newColor } );
 			this.textField.object.changeSelectedColor(newColor);
 		}
 
@@ -136,6 +137,8 @@ export default class SampChatEntry extends React.Component {
 									onContentChanged	={(text) => this.handleContentChanged(key, text)}
 									onTextFieldSelectionChange={this.onTextFieldSelectionChange}
 									onRequestColorPickerUpdate={e => this.setState( { colorPickerEnabled: e.enable, currentColor: e.colorValue } )}
+
+									style={ { marginBottom: '1px' } }
 								/>
 						))}
 					</Grid>
