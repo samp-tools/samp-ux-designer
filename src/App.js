@@ -32,13 +32,17 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 // import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import SaveIcon from '@material-ui/icons/Save';
 import LoadIcon from '@material-ui/icons/CloudUpload';
-
+import TranslateIcon from '@material-ui/icons/Translate';
 import ChatIcon from '@material-ui/icons/Chat';
 import DialogIcon from '@material-ui/icons/ListAlt';
 
 import CustomDialog from './components/CustomDialog';
 
+import LangsCtx, { defaultLanguages } from './contexts/LangsCtx';
+import ChatMessagesCtx, { defaultMessages } from './contexts/ChatMessagesCtx';
+
 const drawerWidth = 240;
+
 
 
 const useStyles = theme => ({
@@ -88,6 +92,13 @@ const useStyles = theme => ({
 		[theme.breakpoints.up('sm')]: {
 			width: theme.spacing(9) + 1,
 		},
+	},
+	toolbar: {
+		height: "65px",
+		"& .ToolbarButton": {
+			height: "100%",
+			width: "70px"
+		}
 	}
 });
 
@@ -104,7 +115,25 @@ class App extends React.Component {
 			dialog: {
 				title: "",
 				content: ""
-			}
+			},
+			chatMessagesCtx: {
+				messages: defaultMessages,
+
+				setMessages: (value) => {
+					const m = this.state.chatMessagesCtx;
+					m.messages = value;
+					this.setState( { chatMessagesCtx: m } );
+				}
+			},
+			langsCtx: {
+				langs: defaultLanguages,
+
+				setLangs: (value) => {
+					const l = this.state.langsCtx;
+					l.langs = value;
+					this.setState( { langsCtx: l } );
+				}
+			},
 		};
 
 		this.dialog = {};
@@ -119,6 +148,11 @@ class App extends React.Component {
 				name: "Dialogs",
 				url: "/dialog",
 				icon: DialogIcon
+			},
+			{
+				name: "Languages",
+				url: "/lang",
+				icon: TranslateIcon
 			}
 		];
 
@@ -231,7 +265,7 @@ class App extends React.Component {
 						}}
 					>
 						<div className={classes.toolbar}>
-							<IconButton onClick={this.handleDrawerClose}>
+							<IconButton className="ToolbarButton" onClick={this.handleDrawerClose}>
 								<ChevronLeftIcon />
 							</IconButton>
 						</div>
@@ -261,10 +295,14 @@ class App extends React.Component {
 							))}
 						</List>
 					</Drawer>
-					<DesignerContent
-						customRef={ref => { this.designer = ref } }
-						onError={(title, content) => this.displayDialog(title, content)}
-						/>
+					<ChatMessagesCtx.Provider value={this.state.chatMessagesCtx}>
+					<LangsCtx.Provider value={this.state.langsCtx} >
+						<DesignerContent
+								customRef={ref => { this.designer = ref } }
+								onError={(title, content) => this.displayDialog(title, content)}
+							/>
+					</LangsCtx.Provider>
+					</ChatMessagesCtx.Provider>
 					<CustomDialog title={this.state.dialog.title} ref={ (ref) => this.dialog.ref = ref }>
 						{this.state.dialog.content}
 					</CustomDialog>

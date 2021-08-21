@@ -8,7 +8,12 @@ import {
 	Select
 } from '@material-ui/core';
 
+// [Custom] Contexts:
+import LangsCtx				from '../contexts/LangsCtx';
+
+// [Custom]: Components
 import SampChatText from './SampChatText';
+
 
 function spliceSlice(str, index, count, add) {
 	// We cannot pass negative indexes directly to the 2nd slicing operation.
@@ -25,16 +30,26 @@ function spliceSlice(str, index, count, add) {
 export default class SampChatEntryPreview
 	extends React.Component
 {
+	static contextType = LangsCtx;
+
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			language: 	props.language || "Polish",
+			language: 	props.language,
 			content: 	props.content || "",
 		};
 		
 		this.textField = React.createRef();
 		
+
+		this.languageDisplayName = () => {
+			const idx = this.context.langs.findIndex(lang => lang.id === this.state.language);
+			if (idx != -1)
+				return this.context.langs[idx].name;
+			
+			return "Unknown";
+		}
 
 		////////////////////////////////////////////////
 		this.handleInputTextChanged = (e) =>
@@ -123,7 +138,7 @@ export default class SampChatEntryPreview
 	render() {
 		return (
 			<Grid container item={this.props.item ? true : undefined} spacing={1}>
-				<Grid item xs={2} md={1}>
+				{/* <Grid item xs={2} md={1}>
 					<FormControl>
 						<InputLabel>Language</InputLabel>
 						<Select native
@@ -133,13 +148,14 @@ export default class SampChatEntryPreview
 									name: 'language'
 								}}
 							>
-							<option value={"Polish"}>Polish</option>
-							<option value={"English"}>English</option>
+							{this.context.langs.map(l => (
+								<option value={l.id}>{l.name}</option>	
+							))}
 						</Select>
 					</FormControl>
-				</Grid>
-				<Grid item xs={10} md={5}>
-					<TextField ref={this.textField} fullWidth variant="filled" label="SAMP Chat Text"
+				</Grid> */}
+				<Grid item xs={12} md={6}>
+					<TextField ref={this.textField} fullWidth variant="filled" label={`${this.languageDisplayName()} - SAMP Chat Text`}
 							value			={this.state.content || ""}
 							onChange		={this.handleInputTextChanged}
 							onFocus			={this.handleFocus}
@@ -149,7 +165,7 @@ export default class SampChatEntryPreview
 							onMouseUp		={this.handleSelectionUpdate}	
 						/>
 				</Grid>
-				<Grid item xs={10} md={6}>
+				<Grid item xs={12} md={6}>
 					<SampChatText content={this.state.content}/>
 				</Grid>
 			</Grid>

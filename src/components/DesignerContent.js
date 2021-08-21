@@ -18,7 +18,8 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import PropTypes from 'prop-types';
 
-import SampChatEntry from './SampChatEntry'
+import ChatMessagesEditor 	from './ChatMessagesEditor';
+import LanguagesEditor 		from './LanguagesEditor';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -46,90 +47,17 @@ class DesignerContent extends React.Component {
 		super(props);
 
 		this.state = {
-			searchPattern: "",
-
+			
 			palette: [
 				{ name: "Dollarbill", value: "#85bb65" }
-			],
-
-			entries: [
-				{ id: uuidv4(), enumIdx: "TXT_HEALED", content: "{00FF00}You {CCFFCC}healed yourself {00FF00}for free!" },
-				{ id: uuidv4(), enumIdx: "TXT_WELCOME", content: "Welcome to the {FF0000}Gold {FFFF00}Party {00CCFF}Polska {FFFFFF}server!" },
 			]
 		};
 
-		this.handleAddNewChatMessage = (front) => {
-			const entries = this.state.entries;
-			const newElem = { id: uuidv4(), content: "Chat message {FF0000}content..." };
-
-			if (front)
-				entries.unshift(newElem);
-			else
-				entries.push(newElem);
-
-			this.setState( { entries } )
-		}
-
-		this.handleRemoveChatMessage = (uuid) => {
-			const entries = this.state.entries.filter(entry => entry.id !== uuid);
-			this.setState( { entries } )
-		}
-		this.handleSearchPatternChanged = (e) => {
-			this.setState( { searchPattern: e.target.value || "" } )
-		}
-		this.handleEntryChanged = (entryIndex, newValue) => {
-			const entries = this.state.entries;
-			entries[entryIndex].enumIdx = newValue.enumIdx || "";
-			entries[entryIndex].content = newValue.content || "";
-			this.setState({ entries });
-		}
-
 		this.error = (title, content) => this.props.onError(title, content);
-
-		this.moveEntry = (entryIndex, newEntryIndex) =>
-		{
-			if (this.state.searchPattern !== "")
-			{
-				this.error("Move forbidden", ["Could not move if the ", <tt>filter</tt>, " is set.", <br/>, "Please remove the filter text first."]);
-				return;
-			}
-
-
-			if (entryIndex < 0 || entryIndex >= this.state.entries.length)
-				return; // ignore
-			
-			if (newEntryIndex < 0 || newEntryIndex >= this.state.entries.length)
-				return; // ignore
-			
-			const entries = this.state.entries;
-			entries.splice(newEntryIndex, 0, entries.splice(entryIndex, 1)[0]);
-
-			this.setState( { entries });
-		}
 
 		this.enterUrl = (url) => {
 			this.props.history.push(url);
 		}
-
-		this.getEntryElements = (entries) => {
-			const p = this.state.searchPattern;
-			const filtered = p !== "" ? entries.filter(e => (e.enumIdx || "").toLowerCase().indexOf(p.toLowerCase()) !== -1) : entries;
-			const result = filtered.map((entry, index) => (
-				<SampChatEntry
-						key			={entry.id}
-						enumIdx		={entry.enumIdx}
-						content		={entry.content}
-						onChange	={(val) => this.handleEntryChanged(index, val)}
-						onRemoved	={() => this.handleRemoveChatMessage(entry.id)}
-						onMovedUp	={() => this.moveEntry(index, index - 1)}
-						onMovedDown	={() => this.moveEntry(index, index + 1)} />
-			));
-
-			if (result.length > 0)
-				return result;
-			else
-				return (<Typography paragraph>No entries{entries.length > 0 ? ` that match pattern "${p}"` : ""}.</Typography>);
-		};
 	}
 
 	generateJsonContent() {
@@ -159,14 +87,6 @@ class DesignerContent extends React.Component {
 	render() {
 		const { classes } = this.props;
 
-		const addBtn = (front = false) => (
-			<Button style={ { marginBottom: 10, marginTop: 10 } } size="large" variant="contained" color="primary" startIcon={<AddIcon/>}
-					onClick={() => this.handleAddNewChatMessage(front)}
-				>
-				Add{front ? " to the top" : ""}
-			</Button>
-		);
-
 		return (
 			<main className={classes.content}>
 				<div className={classes.toolbar} />
@@ -182,19 +102,7 @@ class DesignerContent extends React.Component {
 							to see how it would look like in the in-game chat.
 						</Typography>
 
-						<Grid container spacing={2} className={classes.topContentBar}>
-							<Grid item xs="auto">
-								{addBtn(true)}
-							</Grid>
-							<Grid item xs={3}>
-								<TextField fullWidth InputProps={{ startAdornment: <SearchIcon/> }} placeholder="Filter by enum name"
-										onChange={this.handleSearchPatternChanged}/>
-							</Grid>
-						</Grid>
-						
-						{this.getEntryElements(this.state.entries)}
-						{addBtn()}
-						
+						<ChatMessagesEditor />
 							
 					</Route>
 					<Route path="/dialog">
@@ -213,6 +121,16 @@ class DesignerContent extends React.Component {
 							Enter colors:
 						</Typography>
 
+						{}
+					</Route>
+					<Route path="/lang">
+						<Typography variant="h3">
+							Language setup
+						</Typography>
+						<Typography paragraph>
+							Enter languages:
+						</Typography>
+						<LanguagesEditor />
 						{}
 					</Route>
 				</Switch>
