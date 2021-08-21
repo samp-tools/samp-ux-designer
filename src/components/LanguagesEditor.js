@@ -66,7 +66,7 @@ export default class LanguagesEditor
 	}
 
 	render() {
-		const comp = ({children}) => (<pre>{children}</pre>);
+		// const comp = ({children}) => (<pre>{children}</pre>);
 		return (
 			<Grid container>
 				<Grid item xs={12} md={4} lg={2}>

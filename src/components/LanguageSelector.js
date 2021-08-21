@@ -8,9 +8,6 @@ import {
 	Checkbox,
 } from '@material-ui/core'
 
-// Material UI Styles
-import { withStyles } 	from '@material-ui/core/styles';
-
 // [Custom] Contexts:
 import LangsCtx from '../contexts/LangsCtx';
 
@@ -28,7 +25,7 @@ class LanguageSelector
 
 		this.langNameByUid = (uid) => {
 			const idx = this.context.langs.findIndex(lang => lang.id === uid);
-			if (idx != -1)
+			if (idx !== -1)
 				return this.context.langs[idx].name;
 			
 			return "Unknown";

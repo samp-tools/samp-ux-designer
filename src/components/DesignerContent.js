@@ -1,5 +1,4 @@
 import React from 'react';
-import { v4 as uuidv4 } from 'uuid';
 
 import { Switch, Route, Redirect } from "react-router-dom";
 
@@ -7,14 +6,8 @@ import { withRouter } from "react-router";
 
 import {
 	Typography,
-	TextField,
-	Grid,
-	Button
 } from '@material-ui/core';
 
-
-import AddIcon from '@material-ui/icons/Add';
-import SearchIcon from '@material-ui/icons/Search';
 
 import PropTypes from 'prop-types';
 
@@ -60,25 +53,6 @@ class DesignerContent extends React.Component {
 		}
 	}
 
-	generateJsonContent() {
-		return JSON.stringify({
-			chatMessages: this.state.entries.map(e => ({ id: e.enumIdx || "", content: e.content || "" }))
-		}, null, '\t');
-	}
-
-	loadFromJson(jsonContent) {
-		const jc = JSON.parse(jsonContent);
-		this.setState(
-			{
-				entries: jc.chatMessages.map(cm => ({
-					id: uuidv4(),
-					enumIdx: cm.id || "",
-					content: cm.content || ""
-				}))
-			}
-		);
-	}
-
 	componentDidMount() {
 		this.props.customRef(this);
 	}
@@ -102,7 +76,9 @@ class DesignerContent extends React.Component {
 							to see how it would look like in the in-game chat.
 						</Typography>
 
-						<ChatMessagesEditor />
+						<ChatMessagesEditor
+								onError={this.error}
+							/>
 							
 					</Route>
 					<Route path="/dialog">

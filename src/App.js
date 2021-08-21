@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { v4 as uuidv4 } from 'uuid';
 import { download } from './js/DownloadStringToFile';
 
 import {
@@ -172,7 +173,7 @@ class App extends React.Component {
 			{
 				name: "Save (to JSON)",
 				clickHandler: () => { 
-					download('chat.json', this.designer.generateJsonContent())
+					download('chat.json', this.generateJsonContent())
 				},
 				icon: SaveIcon
 			}
@@ -185,7 +186,7 @@ class App extends React.Component {
 						let reader = new FileReader();
 
 						reader.onload = () => {
-								this.designer.loadFromJson(reader.result);
+								this.loadFromJson(reader.result);
 						}
 
 						reader.readAsText(file);
@@ -202,6 +203,46 @@ class App extends React.Component {
 		this.handleToolSelected = this.handleToolSelected.bind(this);
 		this.handleDrawerOpen   = this.handleDrawerOpen.bind(this);
 		this.handleDrawerClose  = this.handleDrawerClose.bind(this);
+
+		this.generateJsonContent = () =>
+		{
+			return JSON.stringify(
+				{
+					languages:		this.state.langsCtx.langs,
+					chatMessages:	this.state.chatMessagesCtx.messages
+						.map(e => (
+							{
+								uniqueName:	e.enumIdx || "",
+								content:	e.content || ""
+							}
+						))
+				},
+				null, '\t'
+			);
+		}
+	
+		this.loadFromJson = (jsonContent) => {
+			const jc = JSON.parse(jsonContent);
+
+			this.state.langsCtx.setLangs(
+				jc.languages.map(l => (
+					{
+						id:		l.id,
+						name:	l.name
+					}
+				))
+			);
+
+			this.state.chatMessagesCtx.setMessages(
+				jc.chatMessages.map(cm => (
+					{
+						id: 		uuidv4(),
+						enumIdx:	cm.uniqueName	|| "",
+						content:	cm.content		|| ""
+					}
+				))
+			);
+		}
 	}
 
 	setOpen(open)     { this.setState({ open }); }

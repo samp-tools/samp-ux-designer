@@ -3,9 +3,6 @@ import React from 'react';
 import {
 	Grid,
 	TextField,
-	FormControl,
-	InputLabel,
-	Select
 } from '@material-ui/core';
 
 // [Custom] Contexts:
@@ -45,7 +42,7 @@ export default class SampChatEntryPreview
 
 		this.languageDisplayName = () => {
 			const idx = this.context.langs.findIndex(lang => lang.id === this.state.language);
-			if (idx != -1)
+			if (idx !== -1)
 				return this.context.langs[idx].name;
 			
 			return "Unknown";
@@ -138,22 +135,6 @@ export default class SampChatEntryPreview
 	render() {
 		return (
 			<Grid container item={this.props.item ? true : undefined} spacing={1}>
-				{/* <Grid item xs={2} md={1}>
-					<FormControl>
-						<InputLabel>Language</InputLabel>
-						<Select native
-								value={this.state.language}
-								// onChange={handleChange}
-								inputProps={{
-									name: 'language'
-								}}
-							>
-							{this.context.langs.map(l => (
-								<option value={l.id}>{l.name}</option>	
-							))}
-						</Select>
-					</FormControl>
-				</Grid> */}
 				<Grid item xs={12} md={6}>
 					<TextField ref={this.textField} fullWidth variant="filled" label={`${this.languageDisplayName()} - SAMP Chat Text`}
 							value			={this.state.content || ""}

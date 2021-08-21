@@ -45,6 +45,8 @@ class ChatMessagesEditor
 			searchPattern: "",
 		};
 
+		this.error = (title, content) => this.props.onError(title, content);
+
 		this.handleAddNewChatMessage = (msgsCtx, front) => {
 			const entries = msgsCtx.messages;
 			const newElem = { id: uuidv4(), content: "Chat message {FF0000}content..." };
@@ -157,7 +159,7 @@ class ChatMessagesEditor
 			</Button>
 		);
 
-		const comp = ( {children} ) => (<pre>{children}</pre>);
+		// const comp = ( {children} ) => (<pre>{children}</pre>);
 
 		return (
 			<ChatMessagesCtx.Consumer>
