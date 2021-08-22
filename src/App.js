@@ -280,6 +280,14 @@ class App extends React.Component {
 			return JSON.stringify(
 				{
 					languages:		this.state.langsCtx.langs,
+					palette: 		this.state.paletteCtx.palette
+						.map(c => (
+							{
+								prettyName:	c.prettyName,
+								invocation:	c.invoc,
+								value:		c.value
+							}
+						)),
 					chatMessages:	this.state.chatMessagesCtx.messages
 						.map(e => (
 							{
@@ -303,6 +311,21 @@ class App extends React.Component {
 					}
 				))
 			);
+
+			// This is not necessary
+			if (jc.palette)
+			{
+				this.state.paletteCtx.setPalette(
+					jc.palette.map(c => (
+						{
+							id:			uuidv4(),
+							prettyName:	c.prettyName,
+							invoc:		c.invoc,
+							value:		c.value
+						}
+					))
+				);
+			}
 
 			this.state.chatMessagesCtx.setMessages(
 				jc.chatMessages.map(cm => (
