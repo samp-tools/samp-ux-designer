@@ -1,20 +1,15 @@
 import React from 'react';
 
-import { v4 as uuidv4 } from 'uuid';
-import { download } from './js/DownloadStringToFile';
-
+// React router:
 import {
 	BrowserRouter as Router,
-	// Switch,
-	// Route,
-	// Link as RouteLink,
-	// useHistory
 } from "react-router-dom";
 
+// Various:
 import clsx from 'clsx';
+import { v4 as uuidv4 } from 'uuid';
 
-import DesignerContent from './components/DesignerContent';
-
+// Material UI Components
 import {
 	Drawer,         AppBar,             Toolbar,
 	List,           CssBaseline,        Typography,
@@ -22,28 +17,36 @@ import {
 	ListItemIcon,   ListItemText,       Tooltip,
 } from '@material-ui/core';
 
+// Material UI Styles
+import { withStyles } 	from '@material-ui/core/styles';
+
+// Material UI Icons:
 import {
-	// makeStyles,
-	withStyles,
-	// useTheme
-} from '@material-ui/core/styles';
+	Menu			as MenuIcon,
+	ChevronLeft		as ChevronLeftIcon,
+	Save			as SaveIcon,
+	CloudUpload		as LoadIcon,
+	Translate		as TranslateIcon,
+	Palette			as PaletteIcon,
+	Chat			as ChatIcon,
+	ListAlt			as DialogIcon,
+} from '@material-ui/icons';
 
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-// import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import SaveIcon from '@material-ui/icons/Save';
-import LoadIcon from '@material-ui/icons/CloudUpload';
-import TranslateIcon from '@material-ui/icons/Translate';
-import ChatIcon from '@material-ui/icons/Chat';
-import DialogIcon from '@material-ui/icons/ListAlt';
 
-import CustomDialog from './components/CustomDialog';
-
-import LangsCtx, { defaultLanguages } from './contexts/LangsCtx';
+// [Custom] Contexts:
+import LangsCtx, { defaultLanguages } 		from './contexts/LangsCtx';
 import ChatMessagesCtx, { defaultMessages } from './contexts/ChatMessagesCtx';
+import PaletteCtx, { defaultPalette } 		from './contexts/PaletteCtx';
+
+// [Custom] Components:
+import CustomDialog 	from './components/CustomDialog';
+import DesignerContent 	from './components/DesignerContent';
+
+// [Custom] Scripts:
+import { download } 	from './js/DownloadStringToFile';
+
 
 const drawerWidth = 240;
-
 
 
 const useStyles = theme => ({
@@ -186,6 +189,18 @@ class App extends React.Component {
 					}));
 				}
 			},
+			paletteCtx: {
+				palette: defaultPalette,
+
+				setPalette: (value) => {
+					this.setState(prevState => ({
+						paletteCtx: {
+							...prevState.paletteCtx,
+							palette: value
+						}
+					}));
+				}
+			},
 		};
 
 		this.dialog = {};
@@ -205,7 +220,12 @@ class App extends React.Component {
 				name: "Languages",
 				url: "/lang",
 				icon: TranslateIcon
-			}
+			},
+			{
+				name: "Palette",
+				url: "/palette",
+				icon: PaletteIcon
+			},
 		];
 
 		this.displayDialog = (title, content) => {
@@ -389,10 +409,12 @@ class App extends React.Component {
 					</Drawer>
 					<ChatMessagesCtx.Provider value={this.state.chatMessagesCtx}>
 					<LangsCtx.Provider value={this.state.langsCtx} >
+					<PaletteCtx.Provider value={this.state.paletteCtx} >
 						<DesignerContent
 								customRef={ref => { this.designer = ref } }
 								onError={(title, content) => this.displayDialog(title, content)}
 							/>
+					</PaletteCtx.Provider>
 					</LangsCtx.Provider>
 					</ChatMessagesCtx.Provider>
 					<CustomDialog title={this.state.dialog.title} ref={ (ref) => this.dialog.ref = ref }>

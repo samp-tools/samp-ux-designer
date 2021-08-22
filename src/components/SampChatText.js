@@ -5,6 +5,8 @@ import {
 	Typography
 } from '@material-ui/core';
 
+import PaletteCtx from '../contexts/PaletteCtx';
+
 
 const useStyles = makeStyles((theme) => ({
 	text: {
@@ -26,17 +28,37 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
+const replaceNamedColors = (text, palette) => {
+	if (text.length > 0) {
+		text = text.replaceAll(/\{\$([a-zA-Z0-9_]+)\}/g,
+			(wholeMatch, colorInvoc) =>
+			{
+				const idx = palette.findIndex(c => c.invoc === colorInvoc);
+				if (idx === -1)
+					return `{$${colorInvoc}}`;
+
+				return `{${palette[idx].value}}`;
+			});
+	}
+
+	return text;
+}
+
+
 const SampChatText = (props) => {
 
 	const classes = useStyles();
+
+	const paletteCtx = React.useContext(PaletteCtx);
 
 	const [textParts, setTextParts] = React.useState([]);
 
 	const update = () => {
 		const parts = [];
-		let text = props.content || "";
-		let addText = (t) => {
 
+		let text = replaceNamedColors(props.content || "", paletteCtx.palette);
+
+		let addText = (t) => {
 			const nbsp = "\u00A0";
 
 			if (t.startsWith(" "))

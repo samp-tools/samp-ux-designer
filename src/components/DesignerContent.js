@@ -13,6 +13,7 @@ import PropTypes from 'prop-types';
 
 import ChatMessagesEditor 	from './ChatMessagesEditor';
 import LanguagesEditor 		from './LanguagesEditor';
+import PaletteEditor 		from './PaletteEditor';
 
 import { withStyles } from '@material-ui/core/styles';
 
@@ -65,6 +66,7 @@ class DesignerContent extends React.Component {
 			<main className={classes.content}>
 				<div className={classes.toolbar} />
 				<Switch>
+
 					<Route exact path='/'
 						component={() => (<Redirect to='/chat' />)} />
 					<Route path="/chat">
@@ -81,6 +83,7 @@ class DesignerContent extends React.Component {
 							/>
 							
 					</Route>
+
 					<Route path="/dialog">
 						<Typography variant="h3">
 							Dialogs
@@ -89,16 +92,7 @@ class DesignerContent extends React.Component {
 							Work in progress...
 						</Typography>
 					</Route>
-					<Route path="/palette">
-						<Typography variant="h3">
-							Color palette
-						</Typography>
-						<Typography paragraph>
-							Enter colors:
-						</Typography>
 
-						{}
-					</Route>
 					<Route path="/lang">
 						<Typography variant="h3">
 							Language setup
@@ -106,8 +100,21 @@ class DesignerContent extends React.Component {
 						<Typography paragraph>
 							Enter languages:
 						</Typography>
+
 						<LanguagesEditor />
-						{}
+
+					</Route>
+
+					<Route path="/palette">
+						<Typography variant="h3">
+							Color palette
+						</Typography>
+						<Typography paragraph>
+							Setup your color palette
+						</Typography>
+							
+						<PaletteEditor />
+
 					</Route>
 				</Switch>
 			</main>
