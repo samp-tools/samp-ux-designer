@@ -37,6 +37,7 @@ export default class PaletteColor
 			{
 			case EditMode.Name:		newState.prettyName = value; break;
 			case EditMode.Invoc:	newState.invoc = value; break;
+			default: break;
 			}
 			this.setState(newState);
 
@@ -63,7 +64,7 @@ export default class PaletteColor
 				<Grid item xs={3} {...center}
 					onDoubleClick={() => { this.setState({ editMode: EditMode.Name }) } }>
 					{(() => {
-						if (this.state.editMode != EditMode.Name)
+						if (this.state.editMode !== EditMode.Name)
 							return (<b>{this.state.prettyName}</b>);
 						else
 						{
@@ -81,7 +82,7 @@ export default class PaletteColor
 				<Grid item xs={3} {...center}
 					onDoubleClick={() => { this.setState({ editMode: EditMode.Invoc }) } }>
 					{(() => {
-						if (this.state.editMode != EditMode.Invoc)
+						if (this.state.editMode !== EditMode.Invoc)
 							return (<tt>{this.state.invoc}</tt>);
 						else
 						{

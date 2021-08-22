@@ -101,7 +101,7 @@ const SampChatText = (props) => {
 	};
 
 	React.useEffect(update, [
-		props.content, classes.text, props.defaultColor, props.keepColors
+		props.content, classes.text, props.defaultColor, props.keepColors, paletteCtx.palette
 	]);
 
 	
