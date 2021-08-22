@@ -110,9 +110,13 @@ class DesignerContent extends React.Component {
 							Color palette
 						</Typography>
 						<Typography paragraph>
-							Setup your color palette
+							Setup your color palette.
+							<br/>
+							Use <b>double click</b> to edit color names and invocations.
+							<br/>
+							<b>Click</b> on the color box to edit its value.
 						</Typography>
-							
+
 						<PaletteEditor />
 
 					</Route>
