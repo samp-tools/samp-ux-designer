@@ -178,9 +178,12 @@ class App extends React.Component {
 				langs: defaultLanguages,
 
 				setLangs: (value) => {
-					const l = [...this.state.langsCtx];
-					l.langs = value;
-					this.setState( { langsCtx: l } );
+					this.setState(prevState => ({
+						langsCtx: {
+							...prevState.langsCtx,
+							langs: value
+						}
+					}));
 				}
 			},
 		};
