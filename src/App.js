@@ -121,16 +121,64 @@ class App extends React.Component {
 				messages: defaultMessages,
 
 				setMessages: (value) => {
-					const m = this.state.chatMessagesCtx;
-					m.messages = value;
-					this.setState( { chatMessagesCtx: m } );
+					this.setState(prevState => (
+						{
+							chatMessagesCtx: {
+								...prevState.chatMessagesCtx,
+								messages: value
+							}
+						}
+					));
+				},
+				addMessage: (front = false, cnt = '') => {
+					const newUuid = uuidv4();
+					const newMsg = {
+						id: newUuid,
+						content: cnt
+					};
+					
+					if (front)
+					{
+						this.setState(prevState => ({
+							chatMessagesCtx: {
+								...prevState.chatMessagesCtx,
+								messages: [ newMsg, ...prevState.chatMessagesCtx.messages ],
+							},
+						}));
+					}
+					else
+					{
+						this.setState(prevState => ({
+							chatMessagesCtx: {
+								...prevState.chatMessagesCtx,
+								messages: [ ...prevState.chatMessagesCtx.messages, newMsg ],
+							},
+						}));
+					}
+					return newUuid;
+				},
+				updateMessage: (uid, newEnumName, newValue) => {
+					const idx = this.state.chatMessagesCtx.messages.findIndex(cm => cm.id === uid);
+					if (idx === -1)
+						return;
+
+					this.setState(prevState => ({
+						chatMessagesCtx: {
+							...prevState.chatMessagesCtx,
+							messages: [
+								...prevState.chatMessagesCtx.messages,
+								[prevState.chatMessagesCtx.messages[idx].enumIdx]: newEnumName,
+								[prevState.chatMessagesCtx.messages[idx].content]: newValue,
+							],
+						},
+					}));
 				}
 			},
 			langsCtx: {
 				langs: defaultLanguages,
 
 				setLangs: (value) => {
-					const l = this.state.langsCtx;
+					const l = [...this.state.langsCtx];
 					l.langs = value;
 					this.setState( { langsCtx: l } );
 				}

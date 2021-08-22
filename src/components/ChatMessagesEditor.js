@@ -48,15 +48,7 @@ class ChatMessagesEditor
 		this.error = (title, content) => this.props.onError(title, content);
 
 		this.handleAddNewChatMessage = (msgsCtx, front) => {
-			const entries = msgsCtx.messages;
-			const newElem = { id: uuidv4(), content: "Chat message {FF0000}content..." };
-
-			if (front)
-				entries.unshift(newElem);
-			else
-				entries.push(newElem);
-
-			msgsCtx.setMessages(entries);
+			msgsCtx.addMessage(front, "Chat message {FF0000}content...");
 		}
 
 		this.ensureMessagesValid = (msgsCtx, langsCtx) => {
@@ -65,7 +57,7 @@ class ChatMessagesEditor
 				return;
 
 			let numChanged = 0;
-			const msgs = msgsCtx.messages;
+			const msgs = [...msgsCtx.messages];
 			for(let msg of msgs)
 			{
 				if (typeof msg.content == "string")
@@ -81,25 +73,27 @@ class ChatMessagesEditor
 					++numChanged;
 				}
 			}
-
+			console.log(msgsCtx);
 			if (numChanged > 0)
 			{
 				msgsCtx.setMessages(msgs);
 			}
 		};
 
-		this.handleRemoveChatMessage = (msgsCtx, uuid) => {
+		this.handleRemoveChatMessage = (msgsCtx, uuid) =>
+		{
 			const entries = msgsCtx.messages.filter(entry => entry.id !== uuid);
 			msgsCtx.setMessages(entries);
 		}
-		this.handleSearchPatternChanged = (e) => {
+
+		this.handleSearchPatternChanged = (e) =>
+		{
 			this.setState( { searchPattern: e.target.value || "" } )
 		}
-		this.handleEntryChanged = (msgsCtx, entryIndex, newValue) => {
-			const entries = msgsCtx.messages;
-			entries[entryIndex].enumIdx = newValue.enumIdx || "";
-			entries[entryIndex].content = newValue.content || "";
-			msgsCtx.setMessages(entries);
+
+		this.handleEntryChanged = (msgsCtx, entryIndex, newValue) =>
+		{
+			msgsCtx.updateMessage(entryIndex, newValue.enumIdx, newValue.content);
 		}
 		
 		this.moveEntry = (msgsCtx, entryIndex, newEntryIndex) =>
@@ -169,6 +163,8 @@ class ChatMessagesEditor
 							this.ensureMessagesValid(msgsCtx, langsCtx);
 							return (
 								<div>
+
+									{/* <Typography component={comp}>{`setMessages: ${msgsCtx.setMessages}\nupdateMessage: ${msgsCtx.updateMessage}\naddMessage: ${msgsCtx.addMessage}`}</Typography>	 */}
 									{/* <Typography component={comp}>{`${JSON.stringify(msgsCtx, null, '\t')}`}</Typography>	 */}
 									<Grid container spacing={2} className={classes.topContentBar}>
 										<Grid item xs="auto">
