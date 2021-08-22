@@ -70,7 +70,7 @@ class ChatMessagesEditor
 					++numChanged;
 				}
 			}
-			console.log(msgsCtx);
+			
 			if (numChanged > 0)
 			{
 				msgsCtx.setMessages(msgs);
