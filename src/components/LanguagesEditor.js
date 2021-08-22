@@ -102,7 +102,7 @@ export default class LanguagesEditor
 							}
 							
 							return (
-								<ListItem button key={l.id} style={ { alignItems: "center" } }>
+								<ListItem divider dense button key={l.id} style={ { alignItems: "center" } }>
 									<Grid container>
 										<Grid item xs={1}>
 											<div style={ { fontSize: "120%", display: "flex", alignItems: "center", height: "100%" } }>{idx}.</div>
