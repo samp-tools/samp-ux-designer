@@ -165,14 +165,14 @@ class App extends React.Component {
 					if (idx === -1)
 						return;
 
+					const msgs = [...this.state.chatMessagesCtx.messages];
+					msgs[idx].enumIdx = newEnumName;
+					msgs[idx].content = newValue;
+
 					this.setState(prevState => ({
 						chatMessagesCtx: {
 							...prevState.chatMessagesCtx,
-							messages: [
-								...prevState.chatMessagesCtx.messages,
-								[prevState.chatMessagesCtx.messages[idx].enumIdx]: newEnumName,
-								[prevState.chatMessagesCtx.messages[idx].content]: newValue,
-							],
+							messages: msgs
 						},
 					}));
 				}

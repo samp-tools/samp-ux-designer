@@ -108,7 +108,7 @@ class ChatMessagesEditor
 			if (newEntryIndex < 0 || newEntryIndex >= msgsCtx.messages.length)
 				return; // ignore
 			
-			const entries = msgsCtx.messages;
+			const entries = [...msgsCtx.messages];
 			entries.splice(newEntryIndex, 0, entries.splice(entryIndex, 1)[0]);
 
 			msgsCtx.setMessages(entries);
@@ -123,7 +123,7 @@ class ChatMessagesEditor
 						key			={entry.id}
 						enumIdx		={entry.enumIdx}
 						content		={entry.content}
-						onChange	={(val)	=> this.handleEntryChanged(msgsCtx, index, val)}
+						onChange	={(val)	=> this.handleEntryChanged(msgsCtx, entry.id, val)}
 						onRemoved	={()	=> this.handleRemoveChatMessage(msgsCtx, entry.id)}
 						onMovedUp	={()	=> this.moveEntry(msgsCtx, index, index - 1)}
 						onMovedDown	={()	=> this.moveEntry(msgsCtx, index, index + 1)} />
@@ -150,7 +150,7 @@ class ChatMessagesEditor
 			</Button>
 		);
 
-		// const comp = ( {children} ) => (<pre>{children}</pre>);
+		const comp = ( {children} ) => (<pre>{children}</pre>);
 
 		return (
 			<ChatMessagesCtx.Consumer>
@@ -162,7 +162,7 @@ class ChatMessagesEditor
 								<div>
 
 									{/* <Typography component={comp}>{`setMessages: ${msgsCtx.setMessages}\nupdateMessage: ${msgsCtx.updateMessage}\naddMessage: ${msgsCtx.addMessage}`}</Typography>	 */}
-									{/* <Typography component={comp}>{`${JSON.stringify(msgsCtx, null, '\t')}`}</Typography>	 */}
+									<Typography component={comp}>{`${JSON.stringify(msgsCtx, null, '\t')}`}</Typography>	
 									<Grid container spacing={2} className={classes.topContentBar}>
 										<Grid item xs="auto">
 											{addBtn(msgsCtx, true)}

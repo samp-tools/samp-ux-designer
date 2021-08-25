@@ -56,7 +56,7 @@ export default class SampChatEntry extends React.Component {
 		}
 
 		this.handleContentChanged = (index, text) => {
-			const newContent = this.state.content;
+			const newContent = {...this.state.content};
 			newContent[index].value = text;
 			this.setState({ content: newContent });
 			this.props.onChange( { enumIdx: this.state.enumIdx, content: newContent } );
@@ -77,7 +77,7 @@ export default class SampChatEntry extends React.Component {
 		}
 
 		this.onLanguageToggled = (langUid, enabled) => {
-			const newContent = this.state.content;
+			const newContent = {...this.state.content};
 			if (enabled)
 			{
 				if (newContent[langUid] === undefined)
