@@ -12,8 +12,10 @@ import {
 } from '@material-ui/core';
 
 import {
-	Delete	as DeleteIcon,
-	Add		as AddIcon,
+	Add				as AddIcon,
+	Delete			as DeleteIcon,
+	ArrowUpward 	as UpIcon,
+	ArrowDownward 	as DownIcon,
 } from '@material-ui/icons';
 
 // Material UI Extension Components:
@@ -90,6 +92,31 @@ export default class PaletteEditor
 
 			this.context.setPalette([...this.context.palette, newColor]);
 		}
+
+		this.moveEntry = (ctx, entryIndex, newEntryIndex) =>
+		{
+			if (entryIndex < 0 || entryIndex >= ctx.palette.length)
+				return; // ignore
+			
+			if (newEntryIndex < 0 || newEntryIndex >= ctx.palette.length)
+				return; // ignore
+			
+			const entries = ctx.palette;
+			entries.splice(newEntryIndex, 0, entries.splice(entryIndex, 1)[0]);
+
+			ctx.setPalette(entries);
+		}
+
+		this.handleMoveUp = (uid) => {
+			const idx = this.context.palette.findIndex(c => c.id === uid);
+			if (idx !== -1)
+				this.moveEntry(this.context, idx, idx - 1);
+		}
+		this.handleMoveDown = (uid) => {
+			const idx = this.context.palette.findIndex(c => c.id === uid);
+			if (idx !== -1)
+				this.moveEntry(this.context, idx, idx + 1);			
+		}
 	}
 
 	render()
@@ -101,6 +128,8 @@ export default class PaletteEditor
 						<List>
 							{this.context.palette.map(c => (
 								<ListItem divider button key={c.id}>
+									<IconButton onClick={() => this.handleMoveUp(c.id)}><UpIcon/></IconButton>
+									<IconButton onClick={() => this.handleMoveDown(c.id)}><DownIcon/></IconButton>
 									<PaletteColor
 											prettyName			={c.prettyName}
 											invocation			={c.invoc}
