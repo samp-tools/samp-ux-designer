@@ -150,7 +150,7 @@ class ChatMessagesEditor
 			</Button>
 		);
 
-		const comp = ( {children} ) => (<pre>{children}</pre>);
+		// const comp = ( {children} ) => (<pre>{children}</pre>);
 
 		return (
 			<ChatMessagesCtx.Consumer>
@@ -162,7 +162,7 @@ class ChatMessagesEditor
 								<div>
 
 									{/* <Typography component={comp}>{`setMessages: ${msgsCtx.setMessages}\nupdateMessage: ${msgsCtx.updateMessage}\naddMessage: ${msgsCtx.addMessage}`}</Typography>	 */}
-									<Typography component={comp}>{`${JSON.stringify(msgsCtx, null, '\t')}`}</Typography>	
+									{/* <Typography component={comp}>{`${JSON.stringify(msgsCtx, null, '\t')}`}</Typography>	 */}
 									<Grid container spacing={2} className={classes.topContentBar}>
 										<Grid item xs="auto">
 											{addBtn(msgsCtx, true)}

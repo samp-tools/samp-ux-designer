@@ -17,11 +17,13 @@ import {
 	ArrowDownward 	as DownIcon,
 	Delete 			as RemoveIcon,
 	Translate		as TranslateIcon,
+	Edit			as EditIcon,
 } from '@material-ui/icons';
 
 // [Custom] Components:
-import SampChatEntryPreview		from './SampChatEntryPreview'
+import SampChatText				from './SampChatText';
 import LanguageSelector 		from './LanguageSelector';
+import SampChatMessageEditor 	from './SampChatMessageEditor';
 
 export default class SampChatEntry extends React.Component {
 
@@ -31,6 +33,8 @@ export default class SampChatEntry extends React.Component {
 			enumIdx:				props.enumIdx || "",
 			colorPickerEnabled: 	false,
 			langSelectionEnabled:	false,
+			editModeOpen: 			false,
+			enumValid: 				true
 		};
 
 		if (props.content)
@@ -44,6 +48,19 @@ export default class SampChatEntry extends React.Component {
 		// Custom ref
 		this.textField = null;
 
+		this.validateEnumName = (name) => {
+			if (name === undefined)
+				name = this.state.enumIdx;
+
+			const result = /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(name);
+
+			if (result !== this.state.enumValid)
+				this.setState( { enumValid: result } );
+		};
+
+		// Execute once
+		this.validateEnumName();
+
 		this.onTextFieldSelectionChange = (textField) =>
 		{
 			this.textField = textField;
@@ -52,6 +69,7 @@ export default class SampChatEntry extends React.Component {
 		// ////////////////////////////////////////////////
 		this.handleEnumIdxChanged = (e) => {
 			this.setState({ enumIdx: e.target.value });
+			this.validateEnumName(e.target.value);
 			this.props.onChange( { enumIdx: e.target.value, content: this.state.content } );
 		}
 
@@ -99,47 +117,73 @@ export default class SampChatEntry extends React.Component {
 		this.shownLangs = () => {
 			return Object.entries(this.state.content).map(([key, _]) => key);
 		}
+
+		this.onEdit = () => {
+			if (!this.state.editModeOpen)
+				this.setState({ editModeOpen: true });
+		}
+
+		this.editModeClosed = () => {
+			this.setState({ editModeOpen: false });
+		}
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		this.validateEnumName(this.state.enumIdx);
 	}
 	
 	render() {
 		return (
 			<div>
 				<Grid container style={ { marginBottom: 10 } } spacing={2}>
-					<Grid container item xs={8} sm={4} md={2} lg={1}>
-						<Grid item xs={3}>
+					<Grid container item xs={8} sm={4} md={3} lg={3} xl={2}>
+						<Grid item xs={2}>
 							<IconButton onClick={() => this.props.onMovedUp()} > 	<UpIcon/> 		</IconButton>
 						</Grid>
-						<Grid item xs={3}>
+						<Grid item xs={2}>
 							<IconButton onClick={() => this.props.onMovedDown()} > 	<DownIcon/> 	</IconButton>
 						</Grid>
-						<Grid item xs={3}>
+						<Grid item xs={1}></Grid>
+						<Grid item xs={2}>
 							<IconButton onClick={() => this.props.onRemoved()} > 	<RemoveIcon/> 	</IconButton>
 						</Grid>
-						<Grid item xs={3} ref={this.langBtn}>
+						<Grid item xs={2}>
+							<IconButton onClick={() => this.onEdit()} > 		<EditIcon/> 	</IconButton>
+						</Grid>
+						<Grid item xs={1}></Grid>
+						<Grid item xs={2} ref={this.langBtn}>
 							<IconButton onClick={this.toggleLangSelection}> <TranslateIcon/> </IconButton>
 						</Grid>
 					</Grid>
-					<Grid item xs={12} sm={8} md={3} lg={2} xl={1}>
+					<Grid item xs={12} sm={8} md={3} lg={3} xl={2}>
 						<TextField fullWidth variant="filled" label="C++ enum name"
+								InputProps={ { style: { fontFamily: "'Jetbrains Mono', Consolas, monospace" } } }
+	
+								error={!this.state.enumValid}
+								helperText={this.state.enumValid ? null : <span>Use only characters <b><tt>a-z</tt></b>, <b><tt>A-Z</tt></b>, <b><tt>0-9</tt></b> and <b><tt>_</tt></b>. Do not start with a digit!</span>}
+
 								value={this.state.enumIdx || ""}
 								onChange={this.handleEnumIdxChanged}
 							/>
 					</Grid>
 					{/*  */}
-					<Grid container item xs={12} md={7} lg={9} xl={10}>
+					<Grid container item xs={12} md={12} lg={6} xl={8}>
 						{Object.entries(this.state.content)
 							.filter	(([_, value]) => value.enabled)
 							.map	(([key, value]) => (
-							<SampChatEntryPreview 
-									key					={key}
-									language			={key}
-									content				={value.value}
-									onContentChanged	={(text) => this.handleContentChanged(key, text)}
-									onTextFieldSelectionChange={this.onTextFieldSelectionChange}
-									onRequestColorPickerUpdate={e => this.setState( { colorPickerEnabled: e.enable, currentColor: e.colorValue } )}
+							<Grid item xs={12}>
+								<SampChatText key={key} content={value.value}/>
+							</Grid>
+							// <SampChatEntryPreview 
+							// 		key					={key}
+							// 		language			={key}
+							// 		content				={value.value}
+							// 		onContentChanged	={(text) => this.handleContentChanged(key, text)}
+							// 		onTextFieldSelectionChange={this.onTextFieldSelectionChange}
+							// 		onRequestColorPickerUpdate={e => this.setState( { colorPickerEnabled: e.enable, currentColor: e.colorValue } )}
 
-									style={ { marginBottom: '1px' } }
-								/>
+							// 		style={ { marginBottom: '1px' } }
+							// 	/>
 						))}
 					</Grid>
 				</Grid>
@@ -190,6 +234,12 @@ export default class SampChatEntry extends React.Component {
 							onChange={this.handleColorChange}
 						/>
 				</Popover>
+				<SampChatMessageEditor
+						open={this.state.editModeOpen}
+						enumName={this.state.enumIdx}
+						content={this.state.content}
+						onClose={this.editModeClosed}
+					/>			
 			</div>
 		);
 	}
