@@ -30,7 +30,7 @@ export default class SampChatEntry extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			enumIdx:				props.enumIdx || "",
+			cppName:				props.cppName || "",
 			colorPickerEnabled: 	false,
 			langSelectionEnabled:	false,
 			editModeOpen: 			false,
@@ -50,7 +50,7 @@ export default class SampChatEntry extends React.Component {
 
 		this.validateEnumName = (name) => {
 			if (name === undefined)
-				name = this.state.enumIdx;
+				name = this.state.cppName;
 
 			const result = /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(name);
 
@@ -67,17 +67,17 @@ export default class SampChatEntry extends React.Component {
 		};
 
 		// ////////////////////////////////////////////////
-		this.handleEnumIdxChanged = (e) => {
-			this.setState({ enumIdx: e.target.value });
+		this.handleCppNameChanged = (e) => {
+			this.setState({ cppName: e.target.value });
 			this.validateEnumName(e.target.value);
-			this.props.onChange( { enumIdx: e.target.value, content: this.state.content } );
+			this.props.onChange( { cppName: e.target.value, content: this.state.content } );
 		}
 
 		this.handleContentChanged = (index, text) => {
 			const newContent = {...this.state.content};
 			newContent[index].value = text;
 			this.setState({ content: newContent });
-			this.props.onChange( { enumIdx: this.state.enumIdx, content: newContent } );
+			this.props.onChange( { cppName: this.state.cppName, content: newContent } );
 		}
 
 		this.handleColorChange = newColor => {
@@ -111,7 +111,7 @@ export default class SampChatEntry extends React.Component {
 
 			// Propagate changes:
 			this.setState({ content: newContent });
-			this.props.onChange( { enumIdx: this.state.enumIdx, content: newContent } );
+			this.props.onChange( { cppName: this.state.cppName, content: newContent } );
 		}
 
 		this.shownLangs = () => {
@@ -129,7 +129,7 @@ export default class SampChatEntry extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		this.validateEnumName(this.state.enumIdx);
+		this.validateEnumName(this.state.cppName);
 	}
 	
 	render() {
@@ -162,8 +162,8 @@ export default class SampChatEntry extends React.Component {
 								error={!this.state.enumValid}
 								helperText={this.state.enumValid ? null : <span>Use only characters <b><tt>a-z</tt></b>, <b><tt>A-Z</tt></b>, <b><tt>0-9</tt></b> and <b><tt>_</tt></b>. Do not start with a digit!</span>}
 
-								value={this.state.enumIdx || ""}
-								onChange={this.handleEnumIdxChanged}
+								value={this.state.cppName || ""}
+								onChange={this.handleCppNameChanged}
 							/>
 					</Grid>
 					{/*  */}
@@ -236,7 +236,7 @@ export default class SampChatEntry extends React.Component {
 				</Popover>
 				<SampChatMessageEditor
 						open={this.state.editModeOpen}
-						enumName={this.state.enumIdx}
+						enumName={this.state.cppName}
 						content={this.state.content}
 						onClose={this.editModeClosed}
 					/>			

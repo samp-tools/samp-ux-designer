@@ -90,7 +90,7 @@ export default class SampChatMessageEditor
 
 			// Propagate changes:
 			this.setState({ content: newContent });
-			this.props.onChange?.( { enumIdx: this.state.enumIdx, content: newContent } );
+			this.props.onChange?.( { cppName: this.state.cppName, content: newContent } );
 		}
 
 		this.shownLangs = () => {

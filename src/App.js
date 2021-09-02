@@ -166,7 +166,7 @@ class App extends React.Component {
 						return;
 
 					const msgs = [...this.state.chatMessagesCtx.messages];
-					msgs[idx].enumIdx = newEnumName;
+					msgs[idx].cppName = newEnumName;
 					msgs[idx].content = newValue;
 
 					this.setState(prevState => ({
@@ -291,7 +291,7 @@ class App extends React.Component {
 					chatMessages:	this.state.chatMessagesCtx.messages
 						.map(e => (
 							{
-								uniqueName:	e.enumIdx || "",
+								uniqueName:	e.cppName || "",
 								content:	e.content || ""
 							}
 						))
@@ -331,7 +331,7 @@ class App extends React.Component {
 				jc.chatMessages.map(cm => (
 					{
 						id: 		uuidv4(),
-						enumIdx:	cm.uniqueName	|| "",
+						cppName:	cm.uniqueName	|| "",
 						content:	cm.content		|| ""
 					}
 				))

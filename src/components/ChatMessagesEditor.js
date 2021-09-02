@@ -90,7 +90,7 @@ class ChatMessagesEditor
 
 		this.handleEntryChanged = (msgsCtx, entryIndex, newValue) =>
 		{
-			msgsCtx.updateMessage(entryIndex, newValue.enumIdx, newValue.content);
+			msgsCtx.updateMessage(entryIndex, newValue.cppName, newValue.content);
 		}
 		
 		this.moveEntry = (msgsCtx, entryIndex, newEntryIndex) =>
@@ -117,11 +117,11 @@ class ChatMessagesEditor
 		this.getEntryElements = (msgsCtx) => {
 			const entries = msgsCtx.messages;
 			const p = this.state.searchPattern;
-			const filtered = p !== "" ? entries.filter(e => (e.enumIdx || "").toLowerCase().indexOf(p.toLowerCase()) !== -1) : entries;
+			const filtered = p !== "" ? entries.filter(e => (e.cppName || "").toLowerCase().indexOf(p.toLowerCase()) !== -1) : entries;
 			const result = filtered.map((entry, index) => (
 				<SampChatEntry
 						key			={entry.id}
-						enumIdx		={entry.enumIdx}
+						cppName		={entry.cppName}
 						content		={entry.content}
 						onChange	={(val)	=> this.handleEntryChanged(msgsCtx, entry.id, val)}
 						onRemoved	={()	=> this.handleRemoveChatMessage(msgsCtx, entry.id)}
