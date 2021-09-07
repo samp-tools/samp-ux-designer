@@ -154,7 +154,7 @@ export default class SampChatEntry extends React.Component {
 
 		return (
 			<div>
-				<Grid container style={ { marginBottom: 10 } } spacing={2}>
+				<Grid container style={ { marginBottom: 15, border: "1px solid lightgray" } } spacing={2}>
 					<Grid container item xs={8} sm={4} md={3} lg={3} xl={2}>
 						<Grid item xs={2}>
 							<ControlBtn title="Move up" icon={<UpIcon/>} onClick={() => this.props.onMovedUp()} />
