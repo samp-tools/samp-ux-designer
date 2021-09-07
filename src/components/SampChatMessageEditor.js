@@ -103,7 +103,7 @@ export default class SampChatMessageEditor
 			if (!this.textField || !this.textField.object)
 				return;
 
-			this.setState( { currentColor: newColor } );
+			this.setState( { currentColor:	newColor } );
 			this.textField.object.changeSelectedColor(newColor);
 		}
 

@@ -128,6 +128,8 @@ export default class SampChatEntryPreview
 					currentColor: value,
 					content: inputText
 				} );
+
+			this.props.onContentChange?.( inputText );
 		};
 	}
 
