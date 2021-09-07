@@ -54,8 +54,7 @@ export default class SampChatEntryPreview
 			this.setState({ content: e.target.value });
 
 			// Propagate changes to owner
-			if (this.props.onContentChanged)
-				this.props.onContentChanged( e.target.value );
+			this.props.onContentChange?.( e.target.value );
 		}
 
 		////////////////////////////////////////////////
@@ -130,6 +129,14 @@ export default class SampChatEntryPreview
 					content: inputText
 				} );
 		};
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		if (prevProps.content !== this.props.content)
+		{
+			console.log(`New content: `, this.props.content);
+			this.setState( { content: this.props.content } )
+		}
 	}
 
 	render() {

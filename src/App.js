@@ -160,13 +160,13 @@ class App extends React.Component {
 					}
 					return newUuid;
 				},
-				updateMessage: (uid, newEnumName, newValue) => {
+				updateMessage: (uid, newCppName, newValue) => {
 					const idx = this.state.chatMessagesCtx.messages.findIndex(cm => cm.id === uid);
 					if (idx === -1)
 						return;
 
 					const msgs = [...this.state.chatMessagesCtx.messages];
-					msgs[idx].cppName = newEnumName;
+					msgs[idx].cppName = newCppName;
 					msgs[idx].content = newValue;
 
 					this.setState(prevState => ({

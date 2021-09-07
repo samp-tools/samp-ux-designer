@@ -6,10 +6,8 @@ import {
 	IconButton,
 	TextField,
 	Popover,
+	Tooltip,
 } from '@material-ui/core';
-
-// Material UI Extension Components:
-import { ColorBox } from 'material-ui-color';
 
 // Material UI Icons:
 import {
@@ -31,24 +29,22 @@ export default class SampChatEntry extends React.Component {
 		super(props);
 		this.state = {
 			cppName:				props.cppName || "",
-			colorPickerEnabled: 	false,
 			langSelectionEnabled:	false,
 			editModeOpen: 			false,
-			enumValid: 				true
+			enumValid: 				true,
+			editCppNameMode:		false,
 		};
+
+		this.state.editCppNameValue = this.state.cppName;
 
 		if (props.content)
 		{
 			this.state.content = props.content;
 		}
-
-		this.colorPicker 	= React.createRef();
+		
 		this.langBtn		= React.createRef();
 
-		// Custom ref
-		this.textField = null;
-
-		this.validateEnumName = (name) => {
+		this.validateCppName = (name) => {
 			if (name === undefined)
 				name = this.state.cppName;
 
@@ -59,33 +55,51 @@ export default class SampChatEntry extends React.Component {
 		};
 
 		// Execute once
-		this.validateEnumName();
+		this.validateCppName();
 
-		this.onTextFieldSelectionChange = (textField) =>
+		//////////////////////////////////////////////////
+		this.handleCppNameChange = (newCppName) =>
 		{
-			this.textField = textField;
+			this.setState({ cppName: newCppName });
+			this.validateCppName(newCppName);
+			this.props.onChange( { cppName: newCppName, content: this.state.content } );
+		}
+
+		this.cancelEditCppName = () => {
+			this.setState({
+				editCppNameValue:	this.state.cppName,
+				editCppNameMode:	false,
+			});
+		};
+		this.applyEditCppName = () => {
+			this.setState({
+				cppName: 			this.state.editCppNameValue,
+				editCppNameMode:	false,
+			});
+			this.handleCppNameChange(this.state.editCppNameValue);
 		};
 
-		// ////////////////////////////////////////////////
-		this.handleCppNameChanged = (e) => {
-			this.setState({ cppName: e.target.value });
-			this.validateEnumName(e.target.value);
-			this.props.onChange( { cppName: e.target.value, content: this.state.content } );
+		this.handleKeyDownOnEditCppName = (event) =>
+		{
+			if (event.keyCode === 27) // escape
+			{
+				this.cancelEditCppName();
+			}
+			else if (event.keyCode === 13) // enter
+			{
+				this.applyEditCppName();
+			}
+		};
+
+		//////////////////////////////////////////////////
+		this.handleCppNameChangeInternal = ({target}) =>
+		{
+			this.setState({ editCppNameValue: target.value} );
 		}
 
-		this.handleContentChanged = (index, text) => {
-			const newContent = {...this.state.content};
-			newContent[index].value = text;
-			this.setState({ content: newContent });
-			this.props.onChange( { cppName: this.state.cppName, content: newContent } );
-		}
-
-		this.handleColorChange = newColor => {
-			if (!this.textField || !this.textField.object)
-				return;
-
-			this.setState( { currentColor: newColor } );
-			this.textField.object.changeSelectedColor(newColor);
+		this.handleContentChange = (content) => {
+			this.setState( { content } );
+			this.props.onChange( { cppName: this.state.cppName, content: content } );
 		}
 
 		this.toggleLangSelection = () => {
@@ -129,42 +143,69 @@ export default class SampChatEntry extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		this.validateEnumName(this.state.cppName);
+		this.validateCppName(this.state.cppName);
 	}
 	
 	render() {
+
+		const ControlBtn = (props) => (
+			<Tooltip title={props.title}><IconButton onClick={props.onClick}>{props.icon}</IconButton></Tooltip>
+		);
+
 		return (
 			<div>
 				<Grid container style={ { marginBottom: 10 } } spacing={2}>
 					<Grid container item xs={8} sm={4} md={3} lg={3} xl={2}>
 						<Grid item xs={2}>
-							<IconButton onClick={() => this.props.onMovedUp()} > 	<UpIcon/> 		</IconButton>
+							<ControlBtn title="Move up" icon={<UpIcon/>} onClick={() => this.props.onMovedUp()} />
 						</Grid>
 						<Grid item xs={2}>
-							<IconButton onClick={() => this.props.onMovedDown()} > 	<DownIcon/> 	</IconButton>
+							<ControlBtn title="Move down" icon={<DownIcon/>} onClick={() => this.props.onMovedDown()} />
 						</Grid>
 						<Grid item xs={1}></Grid>
 						<Grid item xs={2}>
-							<IconButton onClick={() => this.props.onRemoved()} > 	<RemoveIcon/> 	</IconButton>
+							<ControlBtn title="Delete" icon={<RemoveIcon/>} onClick={() => this.props.onRemoved()} />
 						</Grid>
 						<Grid item xs={2}>
-							<IconButton onClick={() => this.onEdit()} > 		<EditIcon/> 	</IconButton>
+							<ControlBtn title="Edit" icon={<EditIcon/>} onClick={() => this.onEdit()} />
 						</Grid>
 						<Grid item xs={1}></Grid>
 						<Grid item xs={2} ref={this.langBtn}>
-							<IconButton onClick={this.toggleLangSelection}> <TranslateIcon/> </IconButton>
+							<ControlBtn title="Select languages" icon={<TranslateIcon/>} onClick={this.toggleLangSelection} />
 						</Grid>
 					</Grid>
-					<Grid item xs={12} sm={8} md={3} lg={3} xl={2}>
-						<TextField fullWidth variant="filled" label="C++ enum name"
-								InputProps={ { style: { fontFamily: "'Jetbrains Mono', Consolas, monospace" } } }
-	
-								error={!this.state.enumValid}
-								helperText={this.state.enumValid ? null : <span>Use only characters <b><tt>a-z</tt></b>, <b><tt>A-Z</tt></b>, <b><tt>0-9</tt></b> and <b><tt>_</tt></b>. Do not start with a digit!</span>}
-
-								value={this.state.cppName || ""}
-								onChange={this.handleCppNameChanged}
-							/>
+					<Grid item xs={12} sm={8} md={3} lg={3} xl={2}
+						onDoubleClick={ () => { this.setState({ editCppNameMode: true }); console.log("XD"); } }>
+						{this.state.editCppNameMode
+							?
+							(<TextField fullWidth variant="filled" label="C++ enum name"
+									InputProps={{
+										style: { fontFamily: "'Jetbrains Mono', Consolas, monospace" }
+									}}
+									autoFocus={true}
+									error		={!this.state.enumValid}
+									value		={this.state.editCppNameValue || ""}
+									onChange	={this.handleCppNameChangeInternal}
+									onBlur		={this.cancelEditCppName}
+									onKeyDown	={this.handleKeyDownOnEditCppName}
+									onFocus={event => {
+										event.target.select();
+									}}
+								/>)
+							:
+							(<Tooltip title="Double click to edit">
+								<TextField fullWidth variant="outlined" label="C++ enum name"
+										InputProps={{
+											readOnly:	true,
+											onFocus:	"this.blur()",
+											style:		{ fontFamily: "'Jetbrains Mono', Consolas, monospace" }
+										}}
+										error		={!this.state.enumValid}
+										value		={this.state.cppName || ""}
+									/>
+							</Tooltip>)
+							}
+						
 					</Grid>
 					{/*  */}
 					<Grid container item xs={12} md={12} lg={6} xl={8}>
@@ -174,16 +215,6 @@ export default class SampChatEntry extends React.Component {
 							<Grid item xs={12}>
 								<SampChatText key={key} content={value.value}/>
 							</Grid>
-							// <SampChatEntryPreview 
-							// 		key					={key}
-							// 		language			={key}
-							// 		content				={value.value}
-							// 		onContentChanged	={(text) => this.handleContentChanged(key, text)}
-							// 		onTextFieldSelectionChange={this.onTextFieldSelectionChange}
-							// 		onRequestColorPickerUpdate={e => this.setState( { colorPickerEnabled: e.enable, currentColor: e.colorValue } )}
-
-							// 		style={ { marginBottom: '1px' } }
-							// 	/>
 						))}
 					</Grid>
 				</Grid>
@@ -209,37 +240,17 @@ export default class SampChatEntry extends React.Component {
 							onLanguageToggled={this.onLanguageToggled}
 						/>
 				</Popover>
-				<Popover open={this.state.colorPickerEnabled} anchorEl={() => this.textField?.element}
-						ref={this.colorPicker}
-						anchorOrigin={{
-							vertical: 'bottom',
-							horizontal: 'center',
-						}}
-						transformOrigin={{
-							vertical: 'top',
-							horizontal: 'center',
-						}}
-						onClose={(e) => {
-							this.setState( { colorPickerEnabled: false } );
-							return true;
-						}}
-
-						disableAutoFocus={true}
-						disableEnforceFocus={true}
-						disableRestoreFocus={true}
-					>
-					<ColorBox
-							disableAlpha
-							value={this.state.currentColor}
-							onChange={this.handleColorChange}
-						/>
-				</Popover>
-				<SampChatMessageEditor
-						open={this.state.editModeOpen}
-						enumName={this.state.cppName}
-						content={this.state.content}
-						onClose={this.editModeClosed}
-					/>			
+				{this.state.editModeOpen ?
+					(<SampChatMessageEditor
+						open	={this.state.editModeOpen}
+						cppName	={this.state.cppName}
+						content	={this.state.content}
+						onClose	={this.editModeClosed}
+						onCppNameChange={this.handleCppNameChange}
+						onContentChange={this.handleContentChange}
+					/>)
+					: null
+				}
 			</div>
 		);
 	}
