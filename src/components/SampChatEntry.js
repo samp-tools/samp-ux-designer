@@ -65,6 +65,12 @@ export default class SampChatEntry extends React.Component {
 			this.props.onChange( { cppName: newCppName, content: this.state.content } );
 		}
 
+		this.handleCppNameAndContentChange = (newCppName, newContent) => {
+			this.setState({ cppName: newCppName, content: newContent });
+			this.validateCppName(newCppName);
+			this.props.onChange( { cppName: newCppName, content: newContent } );
+		}
+
 		this.cancelEditCppName = () => {
 			this.setState({
 				editCppNameValue:	this.state.cppName,
@@ -197,7 +203,7 @@ export default class SampChatEntry extends React.Component {
 								<TextField fullWidth variant="outlined" label="C++ enum name"
 										InputProps={{
 											readOnly:	true,
-											onFocus:	"this.blur()",
+											onFocus:	(e) => e.currentTarget.blur(),
 											style:		{ fontFamily: "'Jetbrains Mono', Consolas, monospace" }
 										}}
 										error		={!this.state.enumValid}
@@ -242,12 +248,13 @@ export default class SampChatEntry extends React.Component {
 				</Popover>
 				{this.state.editModeOpen ?
 					(<SampChatMessageEditor
-						open	={this.state.editModeOpen}
-						cppName	={this.state.cppName}
-						content	={this.state.content}
-						onClose	={this.editModeClosed}
-						onCppNameChange={this.handleCppNameChange}
-						onContentChange={this.handleContentChange}
+						open						={this.state.editModeOpen}
+						cppName						={this.state.cppName}
+						content						={this.state.content}
+						onClose						={this.editModeClosed}
+						onCppNameAndContentChange	={this.handleCppNameAndContentChange}
+						onCppNameChange				={this.handleCppNameChange}
+						onContentChange				={this.handleContentChange}
 					/>)
 					: null
 				}

@@ -18,6 +18,7 @@ import {
 	Restore		as RevertIcon,
 	Close		as ExitIcon,
 	Translate	as TranslateIcon,
+	Add			as AddIcon,
 } from '@material-ui/icons';
 
 // Material UI Extension Components:
@@ -34,11 +35,12 @@ export default class SampChatMessageEditor
 		super(props);
 
 		this.state = {
-			messageIdx:			props.messageIdx 	|| "",
-			cppName: 			props.cppName 		|| "ChatMessage",
-			content: 			props.content 		|| "",
+			messageIdx:			props.messageIdx	|| "",
+			cppName:			props.cppName		|| "ChatMessage",
+			content:			props.content		|| "",
+			variables:			props.variables		|| {},
 			colorPickerEnabled:	false,
-			anyChanges: 		false,
+			anyChanges:			false,
 			enumValid:			true
 		};
 
@@ -69,7 +71,6 @@ export default class SampChatMessageEditor
 
 			// Copy and modify content object:
 			newContent[langKey] = { ...newContent[langKey], value: text };
-			console.log("Content[langKey]: ", newContent[langKey]);
 			// Apply changes locally.
 			this.setState(
 				{
@@ -113,10 +114,7 @@ export default class SampChatMessageEditor
 				return;
 
 			this.setState( { anyChanges: false } );
-			console.log("Changes:");
-			console.log(this.state.content);
-			this.props.onContentChange( this.state.content );
-			this.props.onCppNameChange( this.state.cppName );
+			this.props.onCppNameAndContentChange( this.state.cppName, this.state.content );
 		}
 
 		this.revertChanges = () =>
@@ -132,9 +130,33 @@ export default class SampChatMessageEditor
 			} );
 		}
 
+		this.handleAddVariableSubstitute = () =>
+		{
+			const BaseVarName = "VarName";
+
+			const vars = {...this.state.variables};
+			const findFreeName = () => {
+				if (vars[BaseVarName] === undefined)
+					return BaseVarName;
+
+				let freeIdx = 1;
+				while(vars[BaseVarName + freeIdx] !== undefined)
+					++freeIdx;
+
+				return BaseVarName + freeIdx;
+			};
+
+			vars[findFreeName()] = 'VALUE';
+
+			this.setState( {
+				anyChanges:	true,
+				variables:	vars,
+			} );
+		};
+
 		this.handleOpenTranslations = () => {
 			this.setState({ langSelectionEnabled: true });
-		}
+		};
 
 		this.onLanguageToggled = (langUid, enabled) => {
 			const newContent = {...this.state.content};
@@ -192,6 +214,22 @@ export default class SampChatMessageEditor
 							/>
 					</Grid>
 					<DialogContentText>
+						Variable substitutes: <IconButton onClick={this.handleAddVariableSubstitute}><AddIcon/></IconButton>
+					</DialogContentText>
+					<Grid container>
+						{Object.entries(this.state.variables)
+								.map(([key, value]) => (
+								<Grid container item xs={12}>
+									<Grid item xs={2}>
+										{key}
+									</Grid>
+									<Grid item xs={2}>
+										{value}
+									</Grid>
+								</Grid>	
+							))}
+					</Grid>
+					<DialogContentText>
 						Translations: <IconButton onClick={this.handleOpenTranslations} ref={this.langBtn}><TranslateIcon/></IconButton>
 					</DialogContentText>
 					<Grid container>
@@ -202,6 +240,7 @@ export default class SampChatMessageEditor
 										key					={key}
 										language			={key}
 										content				={value.value}
+										variables			={this.state.variables}
 										onContentChange		={(text) => this.handleContentChange(key, text)}
 										onTextFieldSelectionChange={this.handleTextFieldSelectionChange}
 										onRequestColorPickerUpdate={e => this.setState( { colorPickerEnabled: e.enable, currentColor: e.colorValue } )}

@@ -7,6 +7,8 @@ import {
 
 import PaletteCtx from '../contexts/PaletteCtx';
 
+import { processChatString } from '../js/ProcessChatString'
+
 
 const useStyles = makeStyles((theme) => ({
 	text: {
@@ -28,22 +30,6 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-const replaceNamedColors = (text, palette) => {
-	if (text.length > 0) {
-		text = text.replaceAll(/\{\$([a-zA-Z0-9_]+)\}/g,
-			(wholeMatch, colorInvoc) =>
-			{
-				const idx = palette.findIndex(c => c.invoc === colorInvoc);
-				if (idx === -1)
-					return `{$${colorInvoc}}`;
-
-				return `{${palette[idx].value}}`;
-			});
-	}
-
-	return text;
-}
-
 
 const SampChatText = (props) => {
 
@@ -56,7 +42,7 @@ const SampChatText = (props) => {
 	const update = () => {
 		const parts = [];
 
-		let text = replaceNamedColors(props.content || "", paletteCtx.palette);
+		let text = processChatString(props.content || "", paletteCtx.palette, props.variables).preview;
 
 		let addText = (t) => {
 			const nbsp = "\u00A0";
@@ -101,7 +87,11 @@ const SampChatText = (props) => {
 	};
 
 	React.useEffect(update, [
-		props.content, classes.text, props.defaultColor, props.keepColors, paletteCtx.palette
+		props.content, classes.text,
+		props.defaultColor,
+		props.keepColors,
+		props.variables,
+		paletteCtx.palette
 	]);
 
 	

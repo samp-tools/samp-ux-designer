@@ -136,7 +136,6 @@ export default class SampChatEntryPreview
 	componentDidUpdate(prevProps, prevState) {
 		if (prevProps.content !== this.props.content)
 		{
-			console.log(`New content: `, this.props.content);
 			this.setState( { content: this.props.content } )
 		}
 	}
@@ -146,6 +145,14 @@ export default class SampChatEntryPreview
 			<Grid style={this.props.style} container item={this.props.item ? true : undefined} spacing={1}>
 				<Grid item xs={12} md={6}>
 					<TextField ref={this.textField} fullWidth variant="filled" label={`${this.languageDisplayName()} - SAMP Chat Text`}
+							InputProps={{
+								style: {
+									fontFamily: "'Jetbrains Mono', Consolas, monospace",
+									fontSize: "100%",
+									letterSpacing: -1.5
+								}
+							}}
+
 							value			={this.state.content || ""}
 							onChange		={this.handleInputTextChanged}
 							onFocus			={this.handleFocus}
@@ -156,7 +163,10 @@ export default class SampChatEntryPreview
 						/>
 				</Grid>
 				<Grid item xs={12} md={6}>
-					<SampChatText content={this.state.content}/>
+					<SampChatText
+							variables	={this.props.variables}
+							content		={this.state.content}
+						/>
 				</Grid>
 			</Grid>
 		);

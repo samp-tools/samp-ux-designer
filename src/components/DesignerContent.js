@@ -40,13 +40,6 @@ class DesignerContent extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			
-			palette: [
-				{ name: "Dollarbill", value: "#85bb65" }
-			]
-		};
-
 		this.error = (title, content) => this.props.onError(title, content);
 
 		this.enterUrl = (url) => {

@@ -43,7 +43,8 @@ import CustomDialog 	from './components/CustomDialog';
 import DesignerContent 	from './components/DesignerContent';
 
 // [Custom] Scripts:
-import { download } 	from './js/DownloadStringToFile';
+import { download }				from './js/DownloadStringToFile';
+import { processChatString }	from './js/ProcessChatString';
 
 
 const drawerWidth = 240;
@@ -277,6 +278,24 @@ class App extends React.Component {
 
 		this.generateJsonContent = () =>
 		{
+			const makeContent = content => {
+				if (!content) return "";
+
+				const processedContent = {};
+				for (const key in content)
+				{
+					const v = content[key];
+					const generated = processChatString(v.value, this.state.paletteCtx.palette, {});
+					processedContent[key] = {
+						value:		v.value,
+						comment:	generated.preview,
+						processed:	generated.cppFormat,
+						enabled:	v.enabled,
+					};
+				}
+				return processedContent;
+			};
+
 			return JSON.stringify(
 				{
 					languages:		this.state.langsCtx.langs,
@@ -292,7 +311,7 @@ class App extends React.Component {
 						.map(e => (
 							{
 								uniqueName:	e.cppName || "",
-								content:	e.content || ""
+								content:	makeContent(e.content)
 							}
 						))
 				},
