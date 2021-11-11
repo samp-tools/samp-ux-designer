@@ -288,7 +288,7 @@ class App extends React.Component {
 					const generated = processChatString(v.value, this.state.paletteCtx.palette, {});
 					processedContent[key] = {
 						value:		v.value,
-						comment:	generated.preview,
+						comment:	generated.comment,
 						processed:	generated.cppFormat,
 						enabled:	v.enabled,
 					};

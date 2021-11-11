@@ -181,7 +181,7 @@ export default class SampChatEntry extends React.Component {
 						</Grid>
 					</Grid>
 					<Grid item xs={12} sm={8} md={3} lg={3} xl={2}
-						onDoubleClick={ () => { this.setState({ editCppNameMode: true }); console.log("XD"); } }>
+						onDoubleClick={ () => { this.setState({ editCppNameMode: true }); } }>
 						{this.state.editCppNameMode
 							?
 							(<TextField fullWidth variant="filled" label="C++ enum name"
