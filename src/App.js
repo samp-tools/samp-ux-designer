@@ -339,7 +339,7 @@ class App extends React.Component {
 						{
 							id:			uuidv4(),
 							prettyName:	c.prettyName,
-							invoc:		c.invoc,
+							invoc:		c.invocation,
 							value:		c.value
 						}
 					))
