@@ -90,7 +90,6 @@ class ChatMessagesEditor
 
 		this.handleEntryChanged = (msgsCtx, entryIndex, newValue) =>
 		{
-			console.log("Changed value:", entryIndex, "to", newValue.content);
 			msgsCtx.updateMessage(entryIndex, newValue.cppName, newValue.content);
 		}
 		
